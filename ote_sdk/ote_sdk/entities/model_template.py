@@ -70,6 +70,7 @@ class TaskFamily(Enum):
     VISION = auto()
     FLOW_CONTROL = auto()
     DATASET = auto()
+    NLP = auto()
 
     def __str__(self) -> str:
         return str(self.name)
@@ -93,6 +94,7 @@ class TaskType(Enum):
     ANOMALY_SEGMENTATION = auto()
     ANOMALY_CLASSIFICATION = auto()
     ROTATED_DETECTION = auto()
+    TEXT_TO_SPEECH = auto()
 
     def __str__(self) -> str:
         return str(self.name)
