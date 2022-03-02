@@ -19,9 +19,11 @@ def raise_value_error_if_parameter_has_unexpected_type(
     parameter, parameter_name, expected_type
 ):
     """Function raises ValueError exception if parameter has unexpected type"""
+    print(f"!_!_! reached raise_value_error function for parameter {parameter_name}")
     if expected_type == float:
         expected_type = (int, float, floating)
     if not isinstance(parameter, expected_type):
+        print(f"!_!_! reached unexpected type branch for parameter {parameter_name} with value {parameter} ")
         parameter_type = type(parameter)
         raise ValueError(
             f"Unexpected type of '{parameter_name}' parameter, expected: {expected_type}, actual: {parameter_type}"
@@ -59,14 +61,17 @@ def check_parameter_type(parameter, parameter_name, expected_type):
     """Function extracts nested expected types and raises ValueError exception if parameter has unexpected type"""
     # pylint: disable=W0212
     if expected_type == typing.Any:
+        print("!_!_! reached branch with type Any")
         return
     if not isinstance(expected_type, typing._GenericAlias):  # type: ignore
+        print("!_!_! reached branch with simple types")
         raise_value_error_if_parameter_has_unexpected_type(
             parameter=parameter,
             parameter_name=parameter_name,
             expected_type=expected_type,
         )
         return
+    print("!_!_! reached branch with nested elements checks")
     origin_class = expected_type.__dict__.get("__origin__")
     # Checking origin class
     raise_value_error_if_parameter_has_unexpected_type(
