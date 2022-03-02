@@ -23,9 +23,16 @@ def raise_value_error_if_parameter_has_unexpected_type(
     if expected_type == float:
         expected_type = (int, float, floating)
     if not isinstance(parameter, expected_type):
-        print(f"!_!_! reached unexpected type branch for parameter {parameter_name} with value {parameter} ")
+        print(
+            f"!_!_! reached unexpected type branch for parameter {parameter_name} with value {parameter} "
+        )
         parameter_type = type(parameter)
-        print(f"unexpected parameter_type={parameter_type}, raising ValueError exception...")
+        print(
+            f"!!!unexpected parameter_type={parameter_type}, raising ValueError exception..."
+        )
+        print(f"!_!_! parameter value={parameter}")
+        print(f"!_!_! parameter name={parameter_name}")
+        print(f"!_!_! expected_type={expected_type}")
         raise ValueError(
             f"Unexpected type of '{parameter_name}' parameter, expected: {expected_type}, actual: {parameter_type}"
         )
