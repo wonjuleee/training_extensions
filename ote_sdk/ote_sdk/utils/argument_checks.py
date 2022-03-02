@@ -34,7 +34,7 @@ def raise_value_error_if_parameter_has_unexpected_type(
         print(f"!_!_! parameter name={parameter_name}")
         print(f"!_!_! expected_type={expected_type}")
         raise ValueError(
-            f"Unexpected type of '{parameter_name}' parameter, expected: {expected_type}, actual: {parameter_type}"
+            f"Unexpected type of {parameter_name} parameter, expected: {expected_type}, actual: {parameter_type}"
         )
 
 
