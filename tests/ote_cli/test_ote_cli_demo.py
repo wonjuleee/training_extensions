@@ -58,10 +58,10 @@ for back_end in ('DETECTION', 'CLASSIFICATION', 'ANOMALY_CLASSIFICATION', 'SEGME
 
 
 class TestDemoCommon:
-    @pytest.fixture(scope="class")
+    @pytest.fixture()
     @e2e_pytest_component
-    @pytest.mark.parametrize("domain, template", params_values, ids=params_ids)
-    def create_venv_fx(self, domain, template):
+    @pytest.mark.parametrize("domain, template", params_values)
+    def create_venv_fx(self, template):
         work_dir, template_work_dir, algo_backend_dir = get_some_vars(template, root)
         create_venv(algo_backend_dir, work_dir, template_work_dir)
 
