@@ -64,11 +64,13 @@ def ote_current_reference_dir_fx(ote_reference_root_dir_fx, current_test_paramet
     The fixture returns an absolute path to the folder where reference files
     for the current model are stored.
     """
+    print(f"!!!ote_reference_root_dir_fx: {ote_reference_root_dir_fx}")
     if ote_reference_root_dir_fx is None:
         return None
     path = os.path.join(
         ote_reference_root_dir_fx, current_test_parameters_fx["model_name"]
     )
+    print(f"!!!path: {path}")
     if not os.path.isdir(path):
         return None
     return path
