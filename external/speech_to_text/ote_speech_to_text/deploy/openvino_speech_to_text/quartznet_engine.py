@@ -1,24 +1,26 @@
-"""
- Copyright (c) 2020-2021 Intel Corporation
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-      http://www.apache.org/licenses/LICENSE-2.0
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
-"""
+# Copyright (C) 2022 Intel Corporation
+# SPDX-License-Identifier: Apache-2.0
+#
+# OpenVINO Toolkit Open Mozel Zoo 2021.4:
+# Copyright (C) 2018-2020 Intel Corporation
+# SPDX-License-Identifier: Apache-2.0
+#
+# This file contains modified code snippets from demos/speech_recognition_quartznet_demo/python/speech_recognition_quartznet_demo.py
+# from https://github.com/openvinotoolkit/open_model_zoo tag 2021.4
+#
 from typing import Tuple, Dict, List
 import json
+# Librosa workaround is based on demos/speech_recognition_quartznet_demo/python/speech_recognition_quartznet_demo.py
+# from https://github.com/openvinotoolkit/open_model_zoo tag 2021.4:
 # Workaround to import librosa on Linux without installed libsndfile.so
 try:
     import librosa
 except OSError:
+    import sys
     import types
     sys.modules['soundfile'] = types.ModuleType('fake_soundfile')
     import librosa
+    del sys.modules['soundfile']
 
 import numpy as np
 import scipy
@@ -136,6 +138,8 @@ class QuartzNet:
         text = self._ctc_greedy_decode(probs, remove_special_symbols)
         return text
 
+    # This method is based on demos/speech_recognition_quartznet_demo/python/speech_recognition_quartznet_demo.py
+    # from https://github.com/openvinotoolkit/open_model_zoo tag 2021.4
     def _audio_to_melspec(self, audio: np.array, sampling_rate: int) -> np.ndarray:
         """ Convert waveform to MEL-spectrogram.
 
@@ -185,6 +189,8 @@ class QuartzNet:
         input_data = {self.input_tensor_name: melspec}
         return next(iter(self.infer_request.infer(input_data).values()))
 
+    # This method is based on demos/speech_recognition_quartznet_demo/python/speech_recognition_quartznet_demo.py
+    # from https://github.com/openvinotoolkit/open_model_zoo tag 2021.4
     def _ctc_greedy_decode(self, pred: np.ndarray, remove_special_symbols: str = True) -> str:
         """ Greedy CTC decoder.
 
