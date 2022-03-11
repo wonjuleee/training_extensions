@@ -15,9 +15,28 @@
 import shutil
 import json
 import os
+import logging
 from subprocess import run  # nosec
 
 from ote_sdk.usecases.exportable_code.utils import get_git_commit_hash
+
+args_paths = {
+    '--train-ann-file': 'data/airport/annotation_example_train.json',
+    '--train-data-roots': 'data/airport/train',
+    '--val-ann-file': 'data/airport/annotation_example_train.json',
+    '--val-data-roots': 'data/airport/train',
+    '--test-ann-files': 'data/airport/annotation_example_train.json',
+    '--test-data-roots': 'data/airport/train',
+}
+
+wrong_paths = {
+               'empty': '',
+               'not_printable': '\x11',
+               # 'null_symbol': '\x00' It is caught on subprocess level
+               }
+
+logger = logging.getLogger(__name__)
+
 
 def get_template_rel_dir(template):
     return os.path.dirname(os.path.relpath(template.model_template_path))
@@ -37,32 +56,33 @@ def get_some_vars(template, root):
 def create_venv(algo_backend_dir, work_dir, template_work_dir):
     venv_dir = f'{work_dir}/venv'
     if not os.path.exists(venv_dir):
-        assert run([f'./{algo_backend_dir}/init_venv.sh', venv_dir]).returncode == 0
-        assert run([f'{work_dir}/venv/bin/python', '-m', 'pip', 'install', '-e', 'ote_cli']).returncode == 0
+        assert run([f'./{algo_backend_dir}/init_venv.sh', venv_dir]).returncode == 0, "Exit code must be 0"
+        install_ote_cli_cmd = [f'{work_dir}/venv/bin/python', '-m', 'pip', 'install', '-e', 'ote_cli']
+        assert run(install_ote_cli_cmd).returncode == 0, "Exit code must be 0"
 
 
 def extract_export_vars(path):
-    vars = {}
+    vars_ = {}
     with open(path) as f:
         for line in f:
             line = line.strip()
             if line.startswith('export ') and '=' in line:
                 line = line.replace('export ', '').split('=')
                 assert len(line) == 2
-                vars[line[0].strip()] = line[1].strip()
-    return vars
+                vars_[line[0].strip()] = line[1].strip()
+    return vars_
 
 
 def collect_env_vars(work_dir):
-    vars = extract_export_vars(f'{work_dir}/venv/bin/activate')
-    vars.update({'PATH':f'{work_dir}/venv/bin/:' + os.environ['PATH']})
+    vars_ = extract_export_vars(f'{work_dir}/venv/bin/activate')
+    vars_.update({'PATH':f'{work_dir}/venv/bin/:' + os.environ['PATH']})
     if 'HTTP_PROXY' in os.environ:
-        vars.update({'HTTP_PROXY': os.environ['HTTP_PROXY']})
+        vars_.update({'HTTP_PROXY': os.environ['HTTP_PROXY']})
     if 'HTTPS_PROXY' in os.environ:
-        vars.update({'HTTPS_PROXY': os.environ['HTTPS_PROXY']})
+        vars_.update({'HTTPS_PROXY': os.environ['HTTPS_PROXY']})
     if 'NO_PROXY' in os.environ:
-        vars.update({'NO_PROXY': os.environ['NO_PROXY']})
-    return vars
+        vars_.update({'NO_PROXY': os.environ['NO_PROXY']})
+    return vars_
 
 
 def patch_demo_py(src_path, dst_path):
@@ -94,17 +114,26 @@ def check_ote_sdk_commit_hash_in_requirements(path):
         raise RuntimeError(f"Invalid ote_sdk requirements (0 or more than 1 times mentioned): {path}")
 
     git_commit_hash = get_git_commit_hash()
-    if git_commit_hash in content[0]:
-        return True
+    assert git_commit_hash in content[0], "OTE SDK commit hash must be in requirement"
 
-    return False
+
+def path_exist_assert(path: str) -> None:
+    path_exist_assert(path), f"Path {path} must be exists after execution"
+
+
+def ote_common(template, root, tool, cmd_args):
+    work_dir, __, _ = get_some_vars(template, root)
+    command_line = ['ote',
+                    tool,
+                    *cmd_args]
+    ret = run(command_line, env=collect_env_vars(work_dir), capture_output=True)
+    output = {'exit_code': int(ret.returncode), 'stdout': str(ret.stdout), 'stderr': str(ret.stderr)}
+    return output
 
 
 def ote_train_testing(template, root, ote_dir, args):
     work_dir, template_work_dir, _ = get_some_vars(template, root)
-    command_line = ['ote',
-                    'train',
-                    template.model_template_id,
+    command_line = [template.model_template_id,
                     '--train-ann-file',
                     f'{os.path.join(ote_dir, args["--train-ann-file"])}',
                     '--train-data-roots',
@@ -116,18 +145,23 @@ def ote_train_testing(template, root, ote_dir, args):
                     '--save-model-to',
                     f'{template_work_dir}/trained_{template.model_template_id}']
     command_line.extend(args['train_params'])
-    assert run(command_line, env=collect_env_vars(work_dir)).returncode == 0
-    assert os.path.exists(f'{template_work_dir}/trained_{template.model_template_id}/weights.pth')
-    assert os.path.exists(f'{template_work_dir}/trained_{template.model_template_id}/label_schema.json')
+    ret = ote_common(template, root, 'train', command_line)
+
+    logger.debug(f"Command arguments: ote train {' '.join(str(it) for it in command_line)}")
+    logger.debug(f"Stdout: {ret['stdout']}\n")
+    logger.debug(f"Stderr: {ret['stderr']}\n")
+    logger.debug(f"Exit_code: {ret['exit_code']}\n")
+
+    assert ret['exit_code'] == 0, "Exit code must be 0"
+    path_exist_assert(f'{template_work_dir}/trained_{template.model_template_id}/weights.pth')
+    path_exist_assert(f'{template_work_dir}/trained_{template.model_template_id}/label_schema.json')
 
 
 def ote_hpo_testing(template, root, ote_dir, args):
     work_dir, template_work_dir, _ = get_some_vars(template, root)
     if os.path.exists(f"{template_work_dir}/hpo"):
         shutil.rmtree(f"{template_work_dir}/hpo")
-    command_line = ['ote',
-                    'train',
-                    template.model_template_id,
+    command_line = [template.model_template_id,
                     '--train-ann-file',
                     f'{os.path.join(ote_dir, args["--train-ann-file"])}',
                     '--train-data-roots',
@@ -142,34 +176,49 @@ def ote_hpo_testing(template, root, ote_dir, args):
                     '--hpo-time-ratio',
                     '1']
     command_line.extend(args['train_params'])
-    assert run(command_line, env=collect_env_vars(work_dir)).returncode == 0
-    assert os.path.exists(f"{template_work_dir}/hpo/hpopt_status.json")
-    with open(f"{template_work_dir}/hpo/hpopt_status.json", "r") as f:
-        assert json.load(f).get('best_config_id', None) is not None
-    assert os.path.exists(f'{template_work_dir}/hpo_trained_{template.model_template_id}/weights.pth')
-    assert os.path.exists(f'{template_work_dir}/hpo_trained_{template.model_template_id}/label_schema.json')
+    ret = ote_common(template, root, 'train', command_line)
+
+    logger.debug(f"Command arguments: ote train {' '.join(str(it) for it in command_line)}")
+    logger.debug(f"Stdout: {ret['stdout']}\n")
+    logger.debug(f"Stderr: {ret['stderr']}\n")
+    logger.debug(f"Exit_code: {ret['exit_code']}\n")
+
+    assert ret['exit_code'] == 0, "Exit code must be 0"
+    hpopt_status_path = f'{template_work_dir}/hpo/hpopt_status.json'
+
+    path_exist_assert(hpopt_status_path)
+    with open(hpopt_status_path, "r") as f:
+        assert json.load(f).get('best_config_id', None) is not None, \
+            f"Json file must be available by path {hpopt_status_path}"
+    path_exist_assert(f'{template_work_dir}/hpo_trained_{template.model_template_id}/weights.pth')
+    path_exist_assert(f'{template_work_dir}/hpo_trained_{template.model_template_id}/label_schema.json')
 
 
 def ote_export_testing(template, root):
     work_dir, template_work_dir, _ = get_some_vars(template, root)
-    command_line = ['ote',
-                    'export',
-                    template.model_template_id,
+    command_line = [template.model_template_id,
                     '--load-weights',
                     f'{template_work_dir}/trained_{template.model_template_id}/weights.pth',
                     f'--save-model-to',
                     f'{template_work_dir}/exported_{template.model_template_id}']
-    assert run(command_line, env=collect_env_vars(work_dir)).returncode == 0
-    assert os.path.exists(f'{template_work_dir}/exported_{template.model_template_id}/openvino.xml')
-    assert os.path.exists(f'{template_work_dir}/exported_{template.model_template_id}/openvino.bin')
-    assert os.path.exists(f'{template_work_dir}/exported_{template.model_template_id}/label_schema.json')
+
+    ret = ote_common(template, root, 'export', command_line)
+
+    logger.debug(f"Command arguments: ote export {' '.join(str(it) for it in command_line)}")
+    logger.debug(f"Stdout: {ret['stdout']}\n")
+    logger.debug(f"Stderr: {ret['stderr']}\n")
+    logger.debug(f"Exit_code: {ret['exit_code']}\n")
+
+    assert ret['exit_code'] == 0, "Exit code must be 0"
+
+    path_exist_assert(f'{template_work_dir}/exported_{template.model_template_id}/openvino.xml')
+    path_exist_assert(f'{template_work_dir}/exported_{template.model_template_id}/openvino.bin')
+    path_exist_assert(f'{template_work_dir}/exported_{template.model_template_id}/label_schema.json')
 
 
 def ote_eval_testing(template, root, ote_dir, args):
     work_dir, template_work_dir, _ = get_some_vars(template, root)
-    command_line = ['ote',
-                    'eval',
-                    template.model_template_id,
+    command_line = [template.model_template_id,
                     '--test-ann-file',
                     f'{os.path.join(ote_dir, args["--test-ann-files"])}',
                     '--test-data-roots',
@@ -178,15 +227,23 @@ def ote_eval_testing(template, root, ote_dir, args):
                     f'{template_work_dir}/trained_{template.model_template_id}/weights.pth',
                     '--save-performance',
                     f'{template_work_dir}/trained_{template.model_template_id}/performance.json']
-    assert run(command_line, env=collect_env_vars(work_dir)).returncode == 0
-    assert os.path.exists(f'{template_work_dir}/trained_{template.model_template_id}/performance.json')
+    ret = ote_common(template, root, 'eval', command_line)
+
+    logger.debug(f"Command arguments: ote eval {' '.join(str(it) for it in command_line)}")
+    logger.debug(f"Stdout: {ret['stdout']}\n")
+    logger.debug(f"Stderr: {ret['stderr']}\n")
+    logger.debug(f"Exit_code: {ret['exit_code']}\n")
+
+    assert ret['exit_code'] == 0, "Exit code must be 0"
+    path_exist_assert(f'{template_work_dir}/trained_{template.model_template_id}/performance.json')
 
 
 def ote_eval_openvino_testing(template, root, ote_dir, args, threshold):
     work_dir, template_work_dir, _ = get_some_vars(template, root)
-    command_line = ['ote',
-                    'eval',
-                    template.model_template_id,
+    exported_performance_path = f'{template_work_dir}/exported_{template.model_template_id}/performance.json'
+    trained_performance_path = f'{template_work_dir}/trained_{template.model_template_id}/performance.json'
+    path_exist_assert(trained_performance_path)
+    command_line = [template.model_template_id,
                     '--test-ann-file',
                     f'{os.path.join(ote_dir, args["--test-ann-files"])}',
                     '--test-data-roots',
@@ -194,80 +251,110 @@ def ote_eval_openvino_testing(template, root, ote_dir, args, threshold):
                     '--load-weights',
                     f'{template_work_dir}/exported_{template.model_template_id}/openvino.xml',
                     '--save-performance',
-                    f'{template_work_dir}/exported_{template.model_template_id}/performance.json']
-    assert run(command_line, env=collect_env_vars(work_dir)).returncode == 0
-    assert os.path.exists(f'{template_work_dir}/exported_{template.model_template_id}/performance.json')
-    with open(f'{template_work_dir}/trained_{template.model_template_id}/performance.json') as read_file:
+                    exported_performance_path]
+    ret = ote_common(template, root, 'eval', command_line)
+
+    logger.debug(f"Command arguments: ote eval {' '.join(str(it) for it in command_line)}")
+    logger.debug(f"Stdout: {ret['stdout']}\n")
+    logger.debug(f"Stderr: {ret['stderr']}\n")
+    logger.debug(f"Exit_code: {ret['exit_code']}\n")
+
+    assert ret['exit_code'] == 0, "Exit code must be 0"
+
+    path_exist_assert(exported_performance_path)
+    with open(trained_performance_path) as read_file:
         trained_performance = json.load(read_file)
-    with open(f'{template_work_dir}/exported_{template.model_template_id}/performance.json') as read_file:
+    with open(exported_performance_path) as read_file:
         exported_performance = json.load(read_file)
 
     for k in trained_performance.keys():
-        assert abs(trained_performance[k] - exported_performance[k]) / trained_performance[k] <= threshold, f"{trained_performance[k]=}, {exported_performance[k]=}"
+        assert trained_performance[k] != 0, f"Trained performance {trained_performance[k]} for {k} must not be 0"
+        performance = abs(trained_performance[k] - exported_performance[k]) / trained_performance[k]
+        assert_info = f"Performance must be <= {threshold} {trained_performance[k]=}, {exported_performance[k]=}"
+        assert performance <= threshold, assert_info
 
 
 def ote_demo_testing(template, root, ote_dir, args):
     work_dir, template_work_dir, _ = get_some_vars(template, root)
-    command_line = ['ote',
-                    'demo',
-                    template.model_template_id,
+    command_line = [template.model_template_id,
                     '--load-weights',
                     f'{template_work_dir}/trained_{template.model_template_id}/weights.pth',
                     '--input',
                     os.path.join(ote_dir, args['--input']),
                     '--delay',
-                    '-1']
-    assert run(command_line, env=collect_env_vars(work_dir)).returncode == 0
+                    '1']
+    ret = ote_common(template, root, 'demo', command_line)
+
+    logger.debug(f"Command arguments: ote demo {' '.join(str(it) for it in command_line)}")
+    logger.debug(f"Stdout: {ret['stdout']}\n")
+    logger.debug(f"Stderr: {ret['stderr']}\n")
+    logger.debug(f"Exit_code: {ret['exit_code']}\n")
+
+    assert ret['exit_code'] == 0, "Exit code must be 0"
 
 
 def ote_demo_openvino_testing(template, root, ote_dir, args):
     work_dir, template_work_dir, _ = get_some_vars(template, root)
-    command_line = ['ote',
-                    'demo',
-                    template.model_template_id,
+    command_line = [template.model_template_id,
                     '--load-weights',
                     f'{template_work_dir}/exported_{template.model_template_id}/openvino.xml',
                     '--input',
                     os.path.join(ote_dir, args['--input']),
                     '--delay',
-                    '-1']
-    assert run(command_line, env=collect_env_vars(work_dir)).returncode == 0
+                    '1']
+    ret = ote_common(template, root, 'demo', command_line)
+
+    logger.debug(f"Command arguments: ote demo {' '.join(str(it) for it in command_line)}")
+    logger.debug(f"Stdout: {ret['stdout']}\n")
+    logger.debug(f"Stderr: {ret['stderr']}\n")
+    logger.debug(f"Exit_code: {ret['exit_code']}\n")
+
+    assert ret['exit_code'] == 0, "Exit code must be 0"
 
 
 def ote_deploy_openvino_testing(template, root, ote_dir, args):
     work_dir, template_work_dir, _ = get_some_vars(template, root)
     deployment_dir = f'{template_work_dir}/deployed_{template.model_template_id}'
-    command_line = ['ote',
-                    'deploy',
-                    template.model_template_id,
+    command_line = [template.model_template_id,
                     '--load-weights',
                     f'{template_work_dir}/exported_{template.model_template_id}/openvino.xml',
                     f'--save-model-to',
                     deployment_dir]
-    assert run(command_line, env=collect_env_vars(work_dir)).returncode == 0
+    ret = ote_common(template, root, 'deploy', command_line)
+
+    logger.debug(f"Command arguments: ote deploy {' '.join(str(it) for it in command_line)}")
+    logger.debug(f"Stdout: {ret['stdout']}\n")
+    logger.debug(f"Stderr: {ret['stderr']}\n")
+    logger.debug(f"Exit_code: {ret['exit_code']}\n")
+
+    assert ret['exit_code'] == 0, "Exit code must be 0"
+
     assert run(['unzip', 'openvino.zip'],
-               cwd=deployment_dir).returncode == 0
+               cwd=deployment_dir).returncode == 0, "Exit code must be 0"
     assert run(['python3', '-m', 'venv', 'venv'],
-               cwd=os.path.join(deployment_dir, 'python')).returncode == 0
+               cwd=os.path.join(deployment_dir, 'python')).returncode == 0, "Exit code must be 0"
     assert run(['python3', '-m', 'pip', 'install', 'wheel'],
                cwd=os.path.join(deployment_dir, 'python'),
-               env=collect_env_vars(os.path.join(deployment_dir, 'python'))).returncode == 0
+               env=collect_env_vars(os.path.join(deployment_dir, 'python'))).returncode == 0, "Exit code must be 0"
 
-    assert check_ote_sdk_commit_hash_in_requirements(os.path.join(deployment_dir, 'python', 'requirements.txt'))
+    check_ote_sdk_commit_hash_in_requirements(os.path.join(deployment_dir, 'python', 'requirements.txt'))
 
-    # Remove ote_sdk from requirements.txt, since merge commit (that is created on CI) is not pushed to github and that's why cannot be cloned.
+    # Remove ote_sdk from requirements.txt, since merge commit
+    # (that is created on CI) is not pushed to github and that's why cannot be cloned.
     # Install ote_sdk from local folder instead.
-    # Install the demo_package with --no-deps since, requirements.txt has been embedded to the demo_package during creation.
+    # Install the demo_package with --no-deps since,
+    # requirements.txt has been embedded to the demo_package during creation.
     remove_ote_sdk_from_requirements(os.path.join(deployment_dir, 'python', 'requirements.txt'))
-    assert run(['python3', '-m', 'pip', 'install', '-e', os.path.join(os.path.dirname(__file__), '..', '..', 'ote_sdk')],
+    cmd_line = ['python3', '-m', 'pip', 'install', '-e', os.path.join(os.path.dirname(__file__), '..', '..', 'ote_sdk')]
+    assert run(cmd_line,
                cwd=os.path.join(deployment_dir, 'python'),
-               env=collect_env_vars(os.path.join(deployment_dir, 'python'))).returncode == 0
+               env=collect_env_vars(os.path.join(deployment_dir, 'python'))).returncode == 0, "Exit code must be 0"
     assert run(['python3', '-m', 'pip', 'install', '-r', os.path.join(deployment_dir, 'python', 'requirements.txt')],
                cwd=os.path.join(deployment_dir, 'python'),
-               env=collect_env_vars(os.path.join(deployment_dir, 'python'))).returncode == 0
+               env=collect_env_vars(os.path.join(deployment_dir, 'python'))).returncode == 0, "Exit code must be 0"
     assert run(['python3', '-m', 'pip', 'install', 'demo_package-0.0-py3-none-any.whl', '--no-deps'],
                cwd=os.path.join(deployment_dir, 'python'),
-               env=collect_env_vars(os.path.join(deployment_dir, 'python'))).returncode == 0
+               env=collect_env_vars(os.path.join(deployment_dir, 'python'))).returncode == 0, "Exit code must be 0"
 
     # Patch demo since we are not able to run cv2.imshow on CI.
     patch_demo_py(os.path.join(deployment_dir, 'python', 'demo.py'),
@@ -275,14 +362,15 @@ def ote_deploy_openvino_testing(template, root, ote_dir, args):
 
     assert run(['python3', 'demo_patched.py', '-m', '../model/model.xml', '-i', os.path.join(ote_dir, args['--input'])],
                cwd=os.path.join(deployment_dir, 'python'),
-               env=collect_env_vars(os.path.join(deployment_dir, 'python'))).returncode == 0
+               env=collect_env_vars(os.path.join(deployment_dir, 'python'))).returncode == 0, "Exit code must be 0"
 
 
 def ote_eval_deployment_testing(template, root, ote_dir, args, threshold):
     work_dir, template_work_dir, _ = get_some_vars(template, root)
-    command_line = ['ote',
-                    'eval',
-                    template.model_template_id,
+    deployed_performance_path = f'{template_work_dir}/deployed_{template.model_template_id}/performance.json'
+    exported_performance_path = f'{template_work_dir}/exported_{template.model_template_id}/performance.json'
+    path_exist_assert(exported_performance_path)
+    command_line = [template.model_template_id,
                     '--test-ann-file',
                     f'{os.path.join(ote_dir, args["--test-ann-files"])}',
                     '--test-data-roots',
@@ -290,37 +378,51 @@ def ote_eval_deployment_testing(template, root, ote_dir, args, threshold):
                     '--load-weights',
                     f'{template_work_dir}/deployed_{template.model_template_id}/openvino.zip',
                     '--save-performance',
-                    f'{template_work_dir}/deployed_{template.model_template_id}/performance.json']
-    assert run(command_line, env=collect_env_vars(work_dir)).returncode == 0
-    assert os.path.exists(f'{template_work_dir}/deployed_{template.model_template_id}/performance.json')
-    with open(f'{template_work_dir}/exported_{template.model_template_id}/performance.json') as read_file:
+                    deployed_performance_path]
+    ret = ote_common(template, root, 'eval', command_line)
+
+    logger.debug(f"Command arguments: ote eval {' '.join(str(it) for it in command_line)}")
+    logger.debug(f"Stdout: {ret['stdout']}\n")
+    logger.debug(f"Stderr: {ret['stderr']}\n")
+    logger.debug(f"Exit_code: {ret['exit_code']}\n")
+
+    assert ret['exit_code'] == 0, "Exit code must be 0"
+    path_exist_assert(deployed_performance_path)
+    with open(exported_performance_path) as read_file:
         exported_performance = json.load(read_file)
-    with open(f'{template_work_dir}/deployed_{template.model_template_id}/performance.json') as read_file:
+    with open(deployed_performance_path) as read_file:
         deployed_performance = json.load(read_file)
 
     for k in exported_performance.keys():
-        assert abs(exported_performance[k] - deployed_performance[k]) / exported_performance[k] <= threshold, f"{exported_performance[k]=}, {deployed_performance[k]=}"
+        assert exported_performance[k] != 0, f"Trained performance {exported_performance[k]} for {k} must not be 0"
+        performance = abs(exported_performance[k] - deployed_performance[k]) / exported_performance[k]
+        assert_info = f"Performance must be <= {threshold}: {deployed_performance[k]=}, {exported_performance[k]=}"
+        assert performance <= threshold, assert_info
 
 
 def ote_demo_deployment_testing(template, root, ote_dir, args):
     work_dir, template_work_dir, _ = get_some_vars(template, root)
-    command_line = ['ote',
-                    'demo',
-                    template.model_template_id,
+    command_line = [template.model_template_id,
                     '--load-weights',
                     f'{template_work_dir}/deployed_{template.model_template_id}/openvino.zip',
                     '--input',
                     os.path.join(ote_dir, args['--input']),
                     '--delay',
-                    '-1']
-    assert run(command_line, env=collect_env_vars(work_dir)).returncode == 0
+                    '1']
+    ret = ote_common(template, root, 'demo', command_line)
+
+    logger.debug(f"Command arguments: ote demo {' '.join(str(it) for it in command_line)}")
+    logger.debug(f"Stdout: {ret['stdout']}\n")
+    logger.debug(f"Stderr: {ret['stderr']}\n")
+    logger.debug(f"Exit_code: {ret['exit_code']}\n")
+
+    assert ret['exit_code'] == 0, "Exit code must be 0"
 
 
 def pot_optimize_testing(template, root, ote_dir, args):
     work_dir, template_work_dir, algo_backend_dir = get_some_vars(template, root)
-    command_line = ['ote',
-                    'optimize',
-                    template.model_template_id,
+    # TODO:fk create tests against parameters
+    command_line = [template.model_template_id,
                     '--train-ann-file',
                     f'{os.path.join(ote_dir, args["--train-ann-file"])}',
                     '--train-data-roots',
@@ -334,17 +436,22 @@ def pot_optimize_testing(template, root, ote_dir, args):
                     '--save-model-to',
                     f'{template_work_dir}/pot_{template.model_template_id}',
                     ]
-    assert run(command_line, env=collect_env_vars(work_dir)).returncode == 0
-    assert os.path.exists(f'{template_work_dir}/pot_{template.model_template_id}/openvino.xml')
-    assert os.path.exists(f'{template_work_dir}/pot_{template.model_template_id}/openvino.bin')
-    assert os.path.exists(f'{template_work_dir}/pot_{template.model_template_id}/label_schema.json')
+    ret = ote_common(template, root, 'optimize', command_line)
+
+    logger.debug(f"Command arguments: ote optimize {' '.join(str(it) for it in command_line)}")
+    logger.debug(f"Stdout: {ret['stdout']}\n")
+    logger.debug(f"Stderr: {ret['stderr']}\n")
+    logger.debug(f"Exit_code: {ret['exit_code']}\n")
+
+    assert ret['exit_code'] == 0, "Exit code must be 0"
+    path_exist_assert(f'{template_work_dir}/pot_{template.model_template_id}/openvino.xml')
+    path_exist_assert(f'{template_work_dir}/pot_{template.model_template_id}/openvino.bin')
+    path_exist_assert(f'{template_work_dir}/pot_{template.model_template_id}/label_schema.json')
 
 
 def pot_eval_testing(template, root, ote_dir, args):
     work_dir, template_work_dir, _ = get_some_vars(template, root)
-    command_line = ['ote',
-                    'eval',
-                    template.model_template_id,
+    command_line = [template.model_template_id,
                     '--test-ann-file',
                     f'{os.path.join(ote_dir, args["--test-ann-files"])}',
                     '--test-data-roots',
@@ -353,15 +460,20 @@ def pot_eval_testing(template, root, ote_dir, args):
                     f'{template_work_dir}/pot_{template.model_template_id}/openvino.xml',
                     '--save-performance',
                     f'{template_work_dir}/pot_{template.model_template_id}/performance.json']
-    assert run(command_line, env=collect_env_vars(work_dir)).returncode == 0
-    assert os.path.exists(f'{template_work_dir}/pot_{template.model_template_id}/performance.json')
+    ret = ote_common(template, root, 'eval', command_line)
+
+    logger.debug(f"Command arguments: ote eval {' '.join(str(it) for it in command_line)}")
+    logger.debug(f"Stdout: {ret['stdout']}\n")
+    logger.debug(f"Stderr: {ret['stderr']}\n")
+    logger.debug(f"Exit_code: {ret['exit_code']}\n")
+
+    assert ret['exit_code'] == 0, "Exit code must be 0"
+    path_exist_assert(f'{template_work_dir}/pot_{template.model_template_id}/performance.json')
 
 
 def nncf_optimize_testing(template, root, ote_dir, args):
     work_dir, template_work_dir, algo_backend_dir = get_some_vars(template, root)
-    command_line = ['ote',
-                    'optimize',
-                    template.model_template_id,
+    command_line = [template.model_template_id,
                     '--train-ann-file',
                     f'{os.path.join(ote_dir, args["--train-ann-file"])}',
                     '--train-data-roots',
@@ -378,34 +490,50 @@ def nncf_optimize_testing(template, root, ote_dir, args):
                     f'{template_work_dir}/nncf_{template.model_template_id}/train_performance.json',
                     ]
     command_line.extend(args['train_params'])
-    assert run(command_line, env=collect_env_vars(work_dir)).returncode == 0
-    assert os.path.exists(f'{template_work_dir}/nncf_{template.model_template_id}/weights.pth')
-    assert os.path.exists(f'{template_work_dir}/nncf_{template.model_template_id}/label_schema.json')
+    ret = ote_common(template, root, 'optimize', command_line)
+
+    logger.debug(f"Command arguments: ote optimize {' '.join(str(it) for it in command_line)}")
+    logger.debug(f"Stdout: {ret['stdout']}\n")
+    logger.debug(f"Stderr: {ret['stderr']}\n")
+    logger.debug(f"Exit_code: {ret['exit_code']}\n")
+
+    assert ret['exit_code'] == 0, "Exit code must be 0"
+    path_exist_assert(f'{template_work_dir}/nncf_{template.model_template_id}/weights.pth')
+    path_exist_assert(f'{template_work_dir}/nncf_{template.model_template_id}/label_schema.json')
 
 
 def nncf_export_testing(template, root):
     work_dir, template_work_dir, _ = get_some_vars(template, root)
-    command_line = ['ote',
-                    'export',
-                    template.model_template_id,
+    command_line = [template.model_template_id,
                     '--load-weights',
                     f'{template_work_dir}/nncf_{template.model_template_id}/weights.pth',
                     f'--save-model-to',
                     f'{template_work_dir}/exported_nncf_{template.model_template_id}']
-    assert run(command_line, env=collect_env_vars(work_dir)).returncode == 0
-    assert os.path.exists(f'{template_work_dir}/exported_nncf_{template.model_template_id}/openvino.xml')
-    assert os.path.exists(f'{template_work_dir}/exported_nncf_{template.model_template_id}/openvino.bin')
-    assert os.path.exists(f'{template_work_dir}/exported_nncf_{template.model_template_id}/label_schema.json')
-    original_bin_size = os.path.getsize(f'{template_work_dir}/exported_{template.model_template_id}/openvino.bin')
-    compressed_bin_size = os.path.getsize(f'{template_work_dir}/exported_nncf_{template.model_template_id}/openvino.bin')
-    assert compressed_bin_size < original_bin_size, f"{compressed_bin_size=}, {original_bin_size=}"
+    ret = ote_common(template, root, 'export', command_line)
+
+    logger.debug(f"Command arguments: ote export {' '.join(str(it) for it in command_line)}")
+    logger.debug(f"Stdout: {ret['stdout']}\n")
+    logger.debug(f"Stderr: {ret['stderr']}\n")
+    logger.debug(f"Exit_code: {ret['exit_code']}\n")
+
+    assert ret['exit_code'] == 0, "Exit code must be 0"
+    path_exist_assert(f'{template_work_dir}/exported_nncf_{template.model_template_id}/openvino.xml')
+    path_exist_assert(f'{template_work_dir}/exported_nncf_{template.model_template_id}/openvino.bin')
+    path_exist_assert(f'{template_work_dir}/exported_nncf_{template.model_template_id}/label_schema.json')
+    original_bin_path = f'{template_work_dir}/exported_{template.model_template_id}/openvino.bin'
+    original_bin_size = os.path.getsize(original_bin_path)
+    compressed_bin_path = f'{template_work_dir}/exported_nncf_{template.model_template_id}/openvino.bin'
+    compressed_bin_size = os.path.getsize(compressed_bin_path)
+    assert_info = f"{compressed_bin_size=} must be < {original_bin_size=}"
+    assert compressed_bin_size < original_bin_size, assert_info
 
 
 def nncf_eval_testing(template, root, ote_dir, args, threshold):
     work_dir, template_work_dir, _ = get_some_vars(template, root)
-    command_line = ['ote',
-                    'eval',
-                    template.model_template_id,
+    nncf_performance_path = f'{template_work_dir}/nncf_{template.model_template_id}/performance.json'
+    nncf_train_performance_path = f'{template_work_dir}/nncf_{template.model_template_id}/train_performance.json'
+    path_exist_assert(nncf_train_performance_path)
+    command_line = [template.model_template_id,
                     '--test-ann-file',
                     f'{os.path.join(ote_dir, args["--test-ann-files"])}',
                     '--test-data-roots',
@@ -413,24 +541,31 @@ def nncf_eval_testing(template, root, ote_dir, args, threshold):
                     '--load-weights',
                     f'{template_work_dir}/nncf_{template.model_template_id}/weights.pth',
                     '--save-performance',
-                    f'{template_work_dir}/nncf_{template.model_template_id}/performance.json']
-    assert run(command_line, env=collect_env_vars(work_dir)).returncode == 0
-    assert os.path.exists(f'{template_work_dir}/nncf_{template.model_template_id}/performance.json')
-    with open(f'{template_work_dir}/nncf_{template.model_template_id}/train_performance.json') as read_file:
+                    nncf_performance_path]
+    ret = ote_common(template, root, 'eval', command_line)
+
+    logger.debug(f"Command arguments: ote eval {' '.join(str(it) for it in command_line)}")
+    logger.debug(f"Stdout: {ret['stdout']}\n")
+    logger.debug(f"Stderr: {ret['stderr']}\n")
+    logger.debug(f"Exit_code: {ret['exit_code']}\n")
+
+    assert ret['exit_code'] == 0, "Exit code must be 0"
+    path_exist_assert(nncf_performance_path)
+    with open(nncf_train_performance_path) as read_file:
         trained_performance = json.load(read_file)
-    with open(f'{template_work_dir}/nncf_{template.model_template_id}/performance.json') as read_file:
+    with open(nncf_performance_path) as read_file:
         evaluated_performance = json.load(read_file)
 
     for k in trained_performance.keys():
-        assert abs(trained_performance[k] - evaluated_performance[k]) / trained_performance[k] <= threshold, \
-            f"{trained_performance[k]=}, {evaluated_performance[k]=}"
+        assert trained_performance[k] != 0, f"Trained performance {trained_performance[k]} for {k} must not be 0"
+        performance = abs(trained_performance[k] - evaluated_performance[k]) / trained_performance[k]
+        assert_info = f"Performance must be <= {threshold}: {trained_performance[k]=}, {evaluated_performance[k]=}"
+        assert performance <= threshold, assert_info
 
 
 def nncf_eval_openvino_testing(template, root, ote_dir, args):
     work_dir, template_work_dir, _ = get_some_vars(template, root)
-    command_line = ['ote',
-                    'eval',
-                    template.model_template_id,
+    command_line = [template.model_template_id,
                     '--test-ann-file',
                     f'{os.path.join(ote_dir, args["--test-ann-files"])}',
                     '--test-data-roots',
@@ -439,5 +574,12 @@ def nncf_eval_openvino_testing(template, root, ote_dir, args):
                     f'{template_work_dir}/exported_nncf_{template.model_template_id}/openvino.xml',
                     '--save-performance',
                     f'{template_work_dir}/exported_nncf_{template.model_template_id}/performance.json']
-    assert run(command_line, env=collect_env_vars(work_dir)).returncode == 0
-    assert os.path.exists(f'{template_work_dir}/exported_nncf_{template.model_template_id}/performance.json')
+    ret = ote_common(template, root, 'eval', command_line)
+
+    logger.debug(f"Command arguments: ote eval {' '.join(str(it) for it in command_line)}")
+    logger.debug(f"Stdout: {ret['stdout']}\n")
+    logger.debug(f"Stderr: {ret['stderr']}\n")
+    logger.debug(f"Exit_code: {ret['exit_code']}\n")
+
+    assert ret['exit_code'] == 0, "Exit code must be 0"
+    path_exist_assert(f'{template_work_dir}/exported_nncf_{template.model_template_id}/performance.json')
