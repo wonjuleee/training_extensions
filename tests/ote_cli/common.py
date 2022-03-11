@@ -118,7 +118,7 @@ def check_ote_sdk_commit_hash_in_requirements(path):
 
 
 def path_exist_assert(path: str) -> None:
-    path_exist_assert(path), f"Path {path} must be exists after execution"
+    assert os.path.exists(path), f"Path {path} must be exists after execution"
 
 
 def ote_common(template, root, tool, cmd_args):
