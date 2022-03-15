@@ -19,8 +19,6 @@ import logging
 from subprocess import run  # nosec
 
 
-from ote_sdk.usecases.exportable_code.utils import get_git_commit_hash
-
 args_paths = {
     '--train-ann-file': 'data/airport/annotation_example_train.json',
     '--train-data-roots': 'data/airport/train',
@@ -106,16 +104,6 @@ def remove_ote_sdk_from_requirements(path):
 
     with open(path, 'w', encoding='UTF-8') as write_file:
         write_file.write(content)
-
-
-def check_ote_sdk_commit_hash_in_requirements(path):
-    with open(path, encoding='UTF-8') as read_file:
-        content = [line for line in read_file if 'ote_sdk' in line]
-    if len(content) != 1:
-        raise RuntimeError(f"Invalid ote_sdk requirements (0 or more than 1 times mentioned): {path}")
-
-    git_commit_hash = get_git_commit_hash()
-    assert git_commit_hash in content[0], "OTE SDK commit hash must be in requirement"
 
 
 def path_exist_assert(path: str) -> None:
@@ -337,8 +325,6 @@ def ote_deploy_openvino_testing(template, root, ote_dir, args):
     assert run(['python3', '-m', 'pip', 'install', 'wheel'],
                cwd=os.path.join(deployment_dir, 'python'),
                env=collect_env_vars(os.path.join(deployment_dir, 'python'))).returncode == 0, "Exit code must be 0"
-
-    check_ote_sdk_commit_hash_in_requirements(os.path.join(deployment_dir, 'python', 'requirements.txt'))
 
     # Remove ote_sdk from requirements.txt, since merge commit
     # (that is created on CI) is not pushed to github and that's why cannot be cloned.
