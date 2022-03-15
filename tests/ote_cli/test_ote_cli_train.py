@@ -15,6 +15,7 @@
 
 import os
 import pytest
+from copy import deepcopy
 
 from ote_sdk.test_suite.e2e_test_system import e2e_pytest_component
 from ote_cli.registry import Registry
@@ -35,6 +36,9 @@ external_path = os.path.join(ote_dir, "external")
 
 params_values = []
 params_ids = []
+params_values_for_be = {}
+params_ids_for_be = {}
+
 for back_end_ in ('DETECTION',
                   'CLASSIFICATION',
                   'ANOMALY_CLASSIFICATION',
@@ -45,6 +49,8 @@ for back_end_ in ('DETECTION',
     cur_templates_ids = [template.model_template_id for template in cur_templates]
     params_values += [(back_end_, t) for t in cur_templates]
     params_ids += [back_end_ + ',' + cur_id for cur_id in cur_templates_ids]
+    params_values_for_be[back_end_] = deepcopy(cur_templates)
+    params_ids_for_be[back_end_] = deepcopy(cur_templates_ids)
 
 
 class TestTrainCommon:
@@ -310,5 +316,88 @@ class TestTrainCommon:
                             '--save-model-to',
                             case]
             ret = ote_common(template, root, 'train', command_line)
+            assert ret['exit_code'] != 0, "Exit code must not be equal 0"
+            assert error_string in ret['stderr'], f"Different error message {ret['stderr']}"
+
+
+class TestTrainAnomalyClassificationTemplateParameters:
+    @pytest.fixture()
+    @e2e_pytest_component
+    @pytest.mark.parametrize("back_end, template", params_values)
+    def create_venv_fx(self, template):
+        work_dir, template_work_dir, algo_backend_dir = get_some_vars(template, root)
+        create_venv(algo_backend_dir, work_dir, template_work_dir)
+
+    @e2e_pytest_component
+    @pytest.mark.parametrize("template", params_values_for_be['ANOMALY_CLASSIFICATION'],
+                             ids=params_ids_for_be['ANOMALY_CLASSIFICATION'])
+    def test_ote_train_dataset_batch_size_type(self, template, create_venv_fx):
+
+        error_string = "invalid int value"
+        cases = ["1.0", "-1", "Alpha"]
+        for case in cases:
+            command_args = [template.model_template_id,
+                            '--train-ann-file',
+                            f'{os.path.join(ote_dir, args_paths["--train-ann-file"])}',
+                            '--train-data-roots',
+                            f'{os.path.join(ote_dir, args_paths["--train-data-roots"])}',
+                            '--val-ann-file',
+                            f'{os.path.join(ote_dir, args_paths["--val-ann-file"])}',
+                            '--val-data-roots',
+                            f'{os.path.join(ote_dir, args_paths["--val-data-roots"])}',
+                            '--save-model-to',
+                            f'./trained_{template.model_template_id}',
+                            'params',
+                            '--dataset.train_batch_size',
+                            case]
+            ret = ote_common(template, root, 'train', command_args)
+            assert ret['exit_code'] != 0, "Exit code must not be equal 0"
+            assert error_string in ret['stderr'], f"Different error message {ret['stderr']}"
+
+    @e2e_pytest_component
+    @pytest.mark.parametrize("template", params_values_for_be['ANOMALY_CLASSIFICATION'],
+                             ids=params_ids_for_be['ANOMALY_CLASSIFICATION'])
+    def test_ote_train_dataset_batch_size_positive(self, template, create_venv_fx):
+
+        command_args = [template.model_template_id,
+                        '--train-ann-file',
+                        f'{os.path.join(ote_dir, args_paths["--train-ann-file"])}',
+                        '--train-data-roots',
+                        f'{os.path.join(ote_dir, args_paths["--train-data-roots"])}',
+                        '--val-ann-file',
+                        f'{os.path.join(ote_dir, args_paths["--val-ann-file"])}',
+                        '--val-data-roots',
+                        f'{os.path.join(ote_dir, args_paths["--val-data-roots"])}',
+                        '--save-model-to',
+                        f'./trained_{template.model_template_id}',
+                        'params',
+                        '--dataset.train_batch_size',
+                        '1']
+        ret = ote_common(template, root, 'train', command_args)
+        assert ret['exit_code'] == 0, "Exit code must be equal 0"
+
+    @e2e_pytest_component
+    @pytest.mark.parametrize("template", params_values_for_be['ANOMALY_CLASSIFICATION'],
+                             ids=params_ids_for_be['ANOMALY_CLASSIFICATION'])
+    def test_ote_train_dataset_batch_size_oob(self, template, create_venv_fx):
+
+        error_string = "is out of bounds."
+        cases = ["0", "513"]
+        for case in cases:
+            command_args = [template.model_template_id,
+                            '--train-ann-file',
+                            f'{os.path.join(ote_dir, args_paths["--train-ann-file"])}',
+                            '--train-data-roots',
+                            f'{os.path.join(ote_dir, args_paths["--train-data-roots"])}',
+                            '--val-ann-file',
+                            f'{os.path.join(ote_dir, args_paths["--val-ann-file"])}',
+                            '--val-data-roots',
+                            f'{os.path.join(ote_dir, args_paths["--val-data-roots"])}',
+                            '--save-model-to',
+                            f'./trained_{template.model_template_id}',
+                            'params',
+                            '--dataset.train_batch_size',
+                            case]
+            ret = ote_common(template, root, 'train', command_args)
             assert ret['exit_code'] != 0, "Exit code must not be equal 0"
             assert error_string in ret['stderr'], f"Different error message {ret['stderr']}"
