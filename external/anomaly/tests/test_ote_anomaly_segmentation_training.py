@@ -81,6 +81,9 @@ def DATASET_PARAMETERS_FIELDS() -> List[str]:
     return deepcopy(['dataset_path',
                      ])
 
+DatasetParameters = namedtuple('DatasetParameters', DATASET_PARAMETERS_FIELDS())
+
+
 def _get_dataset_params_from_dataset_definitions(dataset_definitions, dataset_name):
     if dataset_name not in dataset_definitions:
         raise ValueError(f'dataset {dataset_name} is absent in dataset_definitions, '
