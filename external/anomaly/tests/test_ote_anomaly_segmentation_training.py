@@ -146,7 +146,7 @@ class AnomalySegmentationTrainingTestParameters(DefaultOTETestCreationParameters
                        'ote_anomaly_segmentation_padim',
                        'ote_anomaly_segmentation_stfpm',
                     ],
-                    dataset_name='vivo_short',
+                    dataset_name='mvtec_short',
                     usecase='precommit',
                 ),
                 dict(
