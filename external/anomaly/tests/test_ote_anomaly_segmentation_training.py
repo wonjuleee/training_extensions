@@ -324,7 +324,7 @@ class TestOTEReallifeAnomalySegmentation(OTETrainingTestInterface):
                                  f'template_paths.keys={list(template_paths.keys())}')
             template_path = make_path_be_abs(template_paths[model_name], template_paths[ROOT_PATH_KEY])
             logger.debug('training params factory: Before creating dataset and labels_schema')
-            dataset, labels_schema = _create_anomaly_segmentation_dataset_and_labels_schema(dataset_params, dataset_name)
+            dataset, labels_schema = _create_anomaly_segmentation_dataset_and_labels_schema(dataset_params)
             logger.debug('training params factory: After creating dataset and labels_schema')
             return {
                 'dataset': dataset,
@@ -349,7 +349,7 @@ class TestOTEReallifeAnomalySegmentation(OTETrainingTestInterface):
             template_path = make_path_be_abs(template_paths[model_name], template_paths[ROOT_PATH_KEY])
 
             logger.debug('training params factory: Before creating dataset and labels_schema')
-            dataset, labels_schema = _create_anomaly_segmentation_dataset_and_labels_schema(dataset_params, dataset_name)
+            dataset, labels_schema = _create_anomaly_segmentation_dataset_and_labels_schema(dataset_params)
             logger.debug('training params factory: After creating dataset and labels_schema')
 
             return {
