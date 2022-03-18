@@ -101,7 +101,8 @@ def _get_dataset_params_from_dataset_definitions(dataset_definitions, dataset_na
     params = DatasetParameters(**training_parameters_fields)
     return params
 
-def _create_anomaly_classification_dataset_and_labels_schema(dataset_params, dataset_name):
+
+def _create_anomaly_segmentation_dataset_and_labels_schema(dataset_params, dataset_name):
     logger.debug(f'Path to dataset: {dataset_params.dataset_path}')
     category_list = [f.path for f in os.scandir(dataset_params.dataset_path) if f.is_dir()]
     items = []
@@ -286,6 +287,7 @@ class AnomalySegmentationTestTrainingAction(OTETestTrainingAction):
         }
         return results
 
+
 class TestOTEReallifeAnomalySegmentation(OTETrainingTestInterface):
     """
     The main class of running test in this file.
@@ -421,4 +423,3 @@ class TestOTEReallifeAnomalySegmentation(OTETrainingTestInterface):
             pytest.xfail("NNCF not yet supported for Anomaly Classification")
         test_case_fx.run_stage(test_parameters['test_stage'], data_collector_fx,
                                cur_test_expected_metrics_callback_fx)
-
