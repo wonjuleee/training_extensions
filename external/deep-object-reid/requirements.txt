@@ -1,4 +1,4 @@
-nncf @ git+https://github.com/ljaljushkin/nncf_pytorch/tree/@bnas_develop_merge#egg=nncf
+nncf @ git+https://github.com/ljaljushkin/nncf_pytorch@bnas_develop_merge#egg=nncf
 openvino==2022.1.0.dev20220302
 openvino-dev==2022.1.0.dev20220302
 openmodelzoo-modelapi @ git+https://github.com/openvinotoolkit/open_model_zoo/@releases/2021/SCMVP#egg=openmodelzoo-modelapi&subdirectory=demos/common/python
