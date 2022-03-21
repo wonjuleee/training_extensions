@@ -394,7 +394,7 @@ class TestOTEReallifeAnomalySegmentation(OTETrainingTestInterface):
         setup['test_type'] = os.environ.get('TT_TEST_TYPE', 'no-test-type') # TODO: get from e2e test type
         setup['scenario'] = 'api' # TODO(lbeynens): get from a fixture!
         setup['test'] = request.node.name
-        setup['subject'] = 'custom-anomaly-classification'
+        setup['subject'] = 'custom-anomaly-segmentation'
         setup['project'] = 'ote'
         if 'test_parameters' in setup:
             assert isinstance(setup['test_parameters'], dict)
@@ -420,6 +420,6 @@ class TestOTEReallifeAnomalySegmentation(OTETrainingTestInterface):
              test_case_fx, data_collector_fx,
              cur_test_expected_metrics_callback_fx):
         if "nncf" in test_parameters["test_stage"]:
-            pytest.xfail("NNCF not yet supported for Anomaly Classification")
+            pytest.xfail("NNCF not yet supported for Anomaly Segmentation")
         test_case_fx.run_stage(test_parameters['test_stage'], data_collector_fx,
                                cur_test_expected_metrics_callback_fx)
