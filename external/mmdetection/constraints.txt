@@ -40,7 +40,7 @@ kwarray==0.5.19
 Markdown==3.3.4
 matplotlib==3.4.3
 mccabe==0.6.1
-mmcv-full==1.3.14
+mmcv-full==1.4.3
 mmpycocotools==12.0.3
 natsort==7.1.1
 networkx==2.6.3
