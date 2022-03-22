@@ -341,6 +341,7 @@ class ModelTemplate:
         mobilenet is less important, and has a higher value. Default is zero (the highest priority).
     :var model_optimization_methods: list of ModelOptimizationMethod. This lists all methods available
         to optimize the inference model for the task
+    :var deploy_config: path to the deploy config with parameters for export.
     :var gigaflops: how many billions of operations are required to do inference on a single data item
     :var size: how much disk space the model will approximately take
     """
@@ -374,6 +375,7 @@ class ModelTemplate:
         default_factory=ExportableCodePaths
     )
     task_type_sort_priority: int = -1
+    deploy_config: str = ""
     gigaflops: float = 0
     size: float = 0
 
