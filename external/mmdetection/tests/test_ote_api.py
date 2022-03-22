@@ -51,7 +51,7 @@ from detection_tasks.apis.detection import (OpenVINODetectionTask, OTEDetectionC
                                            OTEDetectionInferenceTask,
                                            OTEDetectionNNCFTask, OTEDetectionTrainingTask)
 from detection_tasks.apis.detection.ote_utils import generate_label_schema
-from mmdet.integration.nncf.utils import is_nncf_enabled
+from ote.integration.nncf.utils import is_nncf_enabled
 
 DEFAULT_TEMPLATE_DIR = osp.join('configs', 'custom-object-detection', 'gen3_mobilenetV2_ATSS')
 
@@ -523,9 +523,9 @@ class API(unittest.TestCase):
             else:
                 print('Skipped test of OTEDetectionNNCFTask. Required NNCF module.')
 
-    @e2e_pytest_api
-    def test_training_gen3_ssd(self):
-        self.end_to_end(osp.join('configs', 'custom-object-detection', 'gen3_mobilenetV2_SSD'))
+    # @e2e_pytest_api
+    # def test_training_gen3_ssd(self):
+    #     self.end_to_end(osp.join('configs', 'custom-object-detection', 'gen3_mobilenetV2_SSD'))
 
     @e2e_pytest_api
     def test_training_gen3_atss(self):
@@ -536,19 +536,19 @@ class API(unittest.TestCase):
         self.end_to_end(osp.join('configs', 'custom-object-detection', 'gen3_resnet50_VFNet'),
             export_perf_delta_tolerance=0.01)
 
-    @e2e_pytest_api
-    def test_training_yolox(self):
-        self.end_to_end(
-            osp.join('configs', 'custom-object-detection', 'cspdarknet_YOLOX'))
+    # @e2e_pytest_api
+    # def test_training_yolox(self):
+    #     self.end_to_end(
+    #         osp.join('configs', 'custom-object-detection', 'cspdarknet_YOLOX'))
 
-    @e2e_pytest_api
-    def test_training_maskrcnn_resnet50(self):
-        self.end_to_end(osp.join('configs',
-                        'custom-counting-instance-seg', 'resnet50_maskrcnn'),
-                        task_type=TaskType.INSTANCE_SEGMENTATION)
+    # @e2e_pytest_api
+    # def test_training_maskrcnn_resnet50(self):
+    #     self.end_to_end(osp.join('configs',
+    #                     'custom-counting-instance-seg', 'resnet50_maskrcnn'),
+    #                     task_type=TaskType.INSTANCE_SEGMENTATION)
 
-    @e2e_pytest_api
-    def test_training_maskrcnn_efficientnetb2b(self):
-        self.end_to_end(osp.join('configs',
-                        'custom-counting-instance-seg', 'efficientnetb2b_maskrcnn'),
-                        task_type=TaskType.INSTANCE_SEGMENTATION)
+    # @e2e_pytest_api
+    # def test_training_maskrcnn_efficientnetb2b(self):
+    #     self.end_to_end(osp.join('configs',
+    #                     'custom-counting-instance-seg', 'efficientnetb2b_maskrcnn'),
+    #                     task_type=TaskType.INSTANCE_SEGMENTATION)

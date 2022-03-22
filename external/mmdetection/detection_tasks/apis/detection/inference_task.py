@@ -46,15 +46,15 @@ from ote_sdk.usecases.tasks.interfaces.inference_interface import IInferenceTask
 from ote_sdk.usecases.tasks.interfaces.unload_interface import IUnload
 from ote_sdk.serialization.label_mapper import label_schema_to_bytes
 
-from mmdet.apis import export_model
+from ote.apis import export_model, export_model_mmdeploy
 from detection_tasks.apis.detection.config_utils import patch_config, prepare_for_testing, set_hyperparams
 from detection_tasks.apis.detection.configuration import OTEDetectionConfig
 from detection_tasks.apis.detection.ote_utils import InferenceProgressCallback
 from mmdet.datasets import build_dataloader, build_dataset
 from mmdet.models import build_detector
-from mmdet.parallel import MMDataCPU
 from mmdet.utils.collect_env import collect_env
 from mmdet.utils.logger import get_root_logger
+from ote.parallel import MMDataCPU
 
 logger = get_root_logger()
 
@@ -92,6 +92,10 @@ class OTEDetectionInferenceTask(IInferenceTask, IExportTask, IEvaluationTask, IU
         patch_config(self._config, self._scratch_space, self._labels, task_type_to_label_domain(self._task_type), random_seed=42)
         set_hyperparams(self._config, self._hyperparams)
         self.confidence_threshold: float = self._hyperparams.postprocessing.confidence_threshold
+
+        # Get deploy config for export.
+        deploy_config_path = os.path.join(self._base_dir, task_environment.model_template.deploy_config)
+        self._deploy_config_path: str = os.path.abspath(deploy_config_path)
 
         # Set default model attributes.
         self._optimization_methods = []
@@ -382,8 +386,12 @@ class OTEDetectionInferenceTask(IInferenceTask, IExportTask, IEvaluationTask, IU
                 else:
                     model = self._model.cpu()
                 pruning_transformation = OptimizationMethod.FILTER_PRUNING in self._optimization_methods
-                export_model(model, self._config, tempdir, target='openvino',
-                             pruning_transformation=pruning_transformation)
+                # TODO: remove export_model
+                #export_model(model, self._config, tempdir, target='openvino',
+                #             pruning_transformation=pruning_transformation)
+                export_model_mmdeploy(model, self._config, tempdir,
+                    target='openvino', deploy_cfg=self._deploy_config_path,
+                    pruning_transformation=pruning_transformation)
                 bin_file = [f for f in os.listdir(tempdir) if f.endswith('.bin')][0]
                 xml_file = [f for f in os.listdir(tempdir) if f.endswith('.xml')][0]
                 with open(os.path.join(tempdir, bin_file), "rb") as f:
