@@ -52,9 +52,9 @@ from detection_tasks.apis.detection.configuration import OTEDetectionConfig
 from detection_tasks.apis.detection.ote_utils import InferenceProgressCallback
 from mmdet.datasets import build_dataloader, build_dataset
 from mmdet.models import build_detector
+from ote.parallel import MMDataCPU
 from mmdet.utils.collect_env import collect_env
 from mmdet.utils.logger import get_root_logger
-from ote.parallel import MMDataCPU
 
 logger = get_root_logger()
 
@@ -165,6 +165,10 @@ class OTEDetectionInferenceTask(IInferenceTask, IExportTask, IEvaluationTask, IU
             model_cfg.pretrained = None
             logger.warning('build detector')
             model = build_detector(model_cfg)
+
+            # TODO: work fine with this fix, but too many outputs.
+            model.init_weights()
+
             # Load all weights.
             logger.warning('load checkpoint')
             load_checkpoint(model, init_from, map_location='cpu')
