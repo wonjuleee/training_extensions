@@ -16,7 +16,7 @@ framework: OTEDetection v2.9.1
 entrypoints:
   base: detection_tasks.apis.detection.OTEDetectionTrainingTask
   openvino: detection_tasks.apis.detection.OpenVINODetectionTask
-  nncf: detection_tasks.apis.detection.OTEDetectionNNCFTask
+  #nncf: detection_tasks.apis.detection.OTEDetectionNNCFTask
 
 # Capabilities.
 capabilities:
@@ -47,6 +47,9 @@ hyper_parameters:
 max_nodes: 1
 training_targets:
   - GPU
+
+# Export parameters.
+deploy_config: ../../deploy_configs/detection_openvino_dynamic-800x1344_custom.py
 
 # Stats.
 gigaflops: 457.4

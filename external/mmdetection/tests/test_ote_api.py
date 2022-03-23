@@ -529,7 +529,8 @@ class API(unittest.TestCase):
 
     @e2e_pytest_api
     def test_training_gen3_atss(self):
-        self.end_to_end(osp.join('configs', 'custom-object-detection', 'gen3_mobilenetV2_ATSS'))
+        self.end_to_end(osp.join('configs', 'custom-object-detection', 'gen3_mobilenetV2_ATSS'),
+            export_perf_delta_tolerance=0.01)
 
     @e2e_pytest_api
     def test_training_gen3_vfnet(self):
