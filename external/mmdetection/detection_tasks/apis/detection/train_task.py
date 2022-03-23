@@ -34,7 +34,7 @@ from ote_sdk.serialization.label_mapper import label_schema_to_bytes
 from ote_sdk.usecases.evaluation.metrics_helper import MetricsHelper
 from ote_sdk.usecases.tasks.interfaces.training_interface import ITrainingTask
 
-from mmdet.apis import train_detector
+from ote.apis import train_detector
 from detection_tasks.apis.detection.config_utils import cluster_anchors, prepare_for_training, set_hyperparams
 from detection_tasks.apis.detection.inference_task import OTEDetectionInferenceTask
 from detection_tasks.apis.detection.ote_utils import TrainingProgressCallback
