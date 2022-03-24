@@ -1,4 +1,4 @@
-_base_ = ['../../../../../../MMDeploy/configs/mmdet/instance-seg/instance-seg_onnxruntime_dynamic.py']
+_base_ = ['../../../../mmdeploy/submodule/configs/mmdet/instance-seg/instance-seg_onnxruntime_dynamic.py']
 
 onnx_config = dict(
     input_names=['image'],

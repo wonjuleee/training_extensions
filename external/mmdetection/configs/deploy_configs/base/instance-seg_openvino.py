@@ -1,4 +1,4 @@
-_base_ = ['../../../../../../MMDeploy/configs/mmdet/instance-seg/instance-seg_openvino_dynamic-800x1344.py']
+_base_ = ['../../../../mmdeploy/submodule/configs/mmdet/instance-seg/instance-seg_openvino_dynamic-800x1344.py']
 
 onnx_config = dict(
     input_names=['image'],
