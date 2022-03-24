@@ -49,7 +49,7 @@ training_targets:
   - GPU
 
 # Export parameters.
-deploy_config: ../../deploy_configs/detection_openvino_dynamic-800x1344_custom.py
+deploy_config: ../../deploy_configs/detection_openvino_dynamic-800x1344.py
 
 # Stats.
 gigaflops: 457.4

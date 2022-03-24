@@ -1,7 +1,4 @@
-_base_ = ['../../../../../MMDeploy/configs/mmdet/_base_/base_openvino_dynamic-800x1344.py']
-
-backend_config = dict(
-    model_inputs=[dict(opt_shapes=dict(input=[1, 3, 300, 300]))])
+_base_ = ['../../../../../../MMDeploy/configs/mmdet/_base_/base_openvino_dynamic-800x1344.py']
 
 onnx_config = dict(
     input_names=['image'],
@@ -21,4 +18,16 @@ onnx_config = dict(
             1: 'num_dets',
         },
     }, _delete_=True),
+    strip_doc_string=False,
 )
+
+'''
+backend_config = dict(
+    mo_args=dict({
+        '--mean_values': [0, 0, 0],
+        '--scale_values': [255, 255, 255],
+        '--data_type': 'FP32',
+    }),
+    mo_flags=['--disable_fusing'],
+)
+'''
