@@ -120,6 +120,9 @@ def get_predictions(task, frame):
     )
     elapsed_time = time.perf_counter() - start_time
     item = predicted_validation_dataset[0]
+    for i, m in enumerate(item.metadata):
+        print(i, m)
+                
     return item.get_annotations(), elapsed_time
 
 
@@ -170,6 +173,8 @@ def main():
         predictions, elapsed_time = get_predictions(task, frame)
         elapsed_times.append(elapsed_time)
         elapsed_time = np.mean(elapsed_times)
+        
+
 
         frame = draw_predictions(
             template.task_type, predictions, frame, args.fit_to_size
