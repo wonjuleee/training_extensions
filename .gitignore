@@ -29,3 +29,6 @@ dmypy.json
 
 # python version
 .python-version
+
+# tmp venv
+cur_task_venv/

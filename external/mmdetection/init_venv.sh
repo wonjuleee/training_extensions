@@ -120,8 +120,11 @@ cd ..
 # Install OTE SDK
 pip install -e ../../ote_sdk/ || exit 1
 
+# Install MMDeploy
+pip install -e ../../ote_sdk/ || exit 1
+
 # Install tasks.
-pip install -e .
+pip install -e ../mmdeploy/submodule/ || exit 1
 
 # Build NNCF extensions
 echo "Build NNCF extensions ..."
