@@ -26,7 +26,7 @@ from subprocess import run  # nosec
 
 from mmdet.apis import init_detector, single_gpu_test
 from mmdet.datasets import build_dataloader, build_dataset
-from mmdet.parallel import MMDataCPU
+from ote.parallel import MMDataCPU
 
 MODEL_CONFIGS = [
     'configs/custom-object-detection/gen3_resnet50_VFNet/model.py',

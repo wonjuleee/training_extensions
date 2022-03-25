@@ -17,7 +17,7 @@ from ote_sdk.entities.shapes.polygon import Polygon, Point
 from ote_sdk.entities.shapes.rectangle import Rectangle
 from ote_sdk.entities.subset import Subset
 from ote_sdk.utils.shape_factory import ShapeFactory
-from pycocotools.coco import COCO
+from mmdet.datasets.api_wrappers import COCO
 
 from mmdet.core import BitmapMasks, PolygonMasks
 
