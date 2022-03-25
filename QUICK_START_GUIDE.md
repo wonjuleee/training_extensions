@@ -11,7 +11,7 @@
     ```
     git clone https://github.com/openvinotoolkit/training_extensions.git
     cd training_extensions
-    git checkout -b develop origin/develop
+    git checkout -b sb/mmdet_update origin/sb/mmdet_update
     git submodule update --init --recursive
     ```
 2. Export `OTE_SDK_PATH` environment variable to use it inside our scripts:
