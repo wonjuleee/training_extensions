@@ -17,6 +17,7 @@
 
 import os
 import pytest
+from copy import deepcopy
 
 from ote_sdk.test_suite.e2e_test_system import e2e_pytest_component
 from ote_cli.registry import Registry
