@@ -249,18 +249,30 @@ class TestDemoDetectionTemplateArguments:
 
     @e2e_pytest_component
     @pytest.mark.parametrize("template", params_values_for_be['DETECTION'], ids=params_ids_for_be['DETECTION'])
-    def test_ote_demo_pp_confidence_threshold_oob(self, template, get_pretrained_artifacts_fx):
-        _, template_work_dir, _ = get_some_vars(template, root)
-        error_string = "is out of bounds"
+    def test_ote_demo_pp_result_based_confidence_threshold(self, template, get_pretrained_artifacts_fx):
+        error_string = "Boolean value expected"
         command_args = [template.model_template_id,
                         '--load-weights',
-                        f'{template_work_dir}/trained_{template.model_template_id}/weights.pth',
+                        f'./trained_{template.model_template_id}/weights.pth',
                         '--input',
-                        f'{os.path.join(ote_dir, default_train_args_paths["--train-data-roots"])}',
+                        f'{os.path.join(ote_dir, "data/airport/train")}',
                         'params',
-                        '--postprocessing.result_based_confidence_threshold',
-                        'String']
+                        '--postprocessing.result_based_confidence_threshold', 'NonBoolean'
+                        ]
         ret = ote_common(template, root, 'demo', command_args)
         assert ret['exit_code'] != 0, "Exit code must not be equal 0"
         assert error_string in ret['stderr'], f"Different error message {ret['stderr']}"
 
+    @e2e_pytest_component
+    @pytest.mark.parametrize("template", params_values_for_be['DETECTION'], ids=params_ids_for_be['DETECTION'])
+    def test_ote_demo_pp_result_based_confidence_threshold_positive_case(self, template, get_pretrained_artifacts_fx):
+        command_args = [template.model_template_id,
+                        '--load-weights',
+                        f'./trained_{template.model_template_id}/weights.pth',
+                        '--input',
+                        f'{os.path.join(ote_dir, "data/airport/train")}',
+                        'params',
+                        '--postprocessing.result_based_confidence_threshold', 'False'
+                        ]
+        ret = ote_common(template, root, 'demo', command_args)
+        assert ret['exit_code'] == 0, "Exit code must be equal 0"
