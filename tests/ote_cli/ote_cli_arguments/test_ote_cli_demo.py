@@ -201,8 +201,40 @@ class TestDemoDetectionTemplateArguments:
     def test_ote_demo_pp_confidence_threshold_type(self, template, get_pretrained_artifacts_fx):
         _, template_work_dir, _ = get_some_vars(template, root)
         error_string = "invalid float value"
-        cases = ["-1", "Alpha"]
-        for case in cases:
+        command_args = [template.model_template_id,
+                        '--load-weights',
+                        f'{template_work_dir}/trained_{template.model_template_id}/weights.pth',
+                        '--input',
+                        f'{os.path.join(ote_dir, default_train_args_paths["--train-data-roots"])}',
+                        'params',
+                        '--postprocessing.confidence_threshold',
+                        'String']
+        ret = ote_common(template, root, 'demo', command_args)
+        assert ret['exit_code'] != 0, "Exit code must not be equal 0"
+        assert error_string in ret['stderr'], f"Different error message {ret['stderr']}"
+
+    @e2e_pytest_component
+    @pytest.mark.parametrize("template", params_values_for_be['DETECTION'], ids=params_ids_for_be['DETECTION'])
+    def test_ote_demo_pp_confidence_threshold_type_positive(self, template, get_pretrained_artifacts_fx):
+        _, template_work_dir, _ = get_some_vars(template, root)
+        command_args = [template.model_template_id,
+                        '--load-weights',
+                        f'{template_work_dir}/trained_{template.model_template_id}/weights.pth',
+                        '--input',
+                        f'{os.path.join(ote_dir, default_train_args_paths["--train-data-roots"])}',
+                        'params',
+                        '--postprocessing.confidence_threshold',
+                        '0.5']
+        ret = ote_common(template, root, 'demo', command_args)
+        assert ret['exit_code'] == 0, "Exit code must be equal 0"
+
+    @e2e_pytest_component
+    @pytest.mark.parametrize("template", params_values_for_be['DETECTION'], ids=params_ids_for_be['DETECTION'])
+    def test_ote_demo_pp_confidence_threshold_oob(self, template, get_pretrained_artifacts_fx):
+        _, template_work_dir, _ = get_some_vars(template, root)
+        error_string = "is out of bounds"
+        oob_values = ["-0.1", "1.1"]
+        for value in oob_values:
             command_args = [template.model_template_id,
                             '--load-weights',
                             f'{template_work_dir}/trained_{template.model_template_id}/weights.pth',
@@ -210,7 +242,25 @@ class TestDemoDetectionTemplateArguments:
                             f'{os.path.join(ote_dir, default_train_args_paths["--train-data-roots"])}',
                             'params',
                             '--postprocessing.confidence_threshold',
-                            case]
+                            value]
             ret = ote_common(template, root, 'demo', command_args)
             assert ret['exit_code'] != 0, "Exit code must not be equal 0"
             assert error_string in ret['stderr'], f"Different error message {ret['stderr']}"
+
+    @e2e_pytest_component
+    @pytest.mark.parametrize("template", params_values_for_be['DETECTION'], ids=params_ids_for_be['DETECTION'])
+    def test_ote_demo_pp_confidence_threshold_oob(self, template, get_pretrained_artifacts_fx):
+        _, template_work_dir, _ = get_some_vars(template, root)
+        error_string = "is out of bounds"
+        command_args = [template.model_template_id,
+                        '--load-weights',
+                        f'{template_work_dir}/trained_{template.model_template_id}/weights.pth',
+                        '--input',
+                        f'{os.path.join(ote_dir, default_train_args_paths["--train-data-roots"])}',
+                        'params',
+                        '--postprocessing.result_based_confidence_threshold',
+                        'String']
+        ret = ote_common(template, root, 'demo', command_args)
+        assert ret['exit_code'] != 0, "Exit code must not be equal 0"
+        assert error_string in ret['stderr'], f"Different error message {ret['stderr']}"
+
