@@ -20,6 +20,13 @@ from subprocess import run  # nosec
 import pytest
 
 
+def get_ote_root_dir():
+    cur_file_path = os.path.realpath(__file__)
+    cur_file_dir = os.path.dirname(cur_file_path)
+    ote_cli_path = os.path.dirname(os.path.dirname(cur_file_dir))
+    return os.path.dirname(ote_cli_path)
+
+
 def get_template_rel_dir(template):
     return os.path.dirname(os.path.relpath(template.model_template_path))
 

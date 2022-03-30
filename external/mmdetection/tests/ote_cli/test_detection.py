@@ -23,6 +23,7 @@ from ote_sdk.test_suite.e2e_test_system import e2e_pytest_component
 from ote_cli.registry import Registry
 from ote_cli.utils.tests import (
     collect_env_vars,
+    get_ote_root_dir,
     create_venv,
     get_some_vars,
     ote_demo_deployment_testing,
@@ -63,9 +64,10 @@ args = {
 }
 
 root = '/tmp/ote_cli/'
-ote_dir = os.getcwd()
+ote_dir = get_ote_root_dir()
 
-templates = Registry('external').filter(task_type='DETECTION').templates
+external_dir = os.path.join(ote_dir, 'external')
+templates = Registry(external_dir).filter(task_type='DETECTION').templates
 templates_ids = [template.model_template_id for template in templates]
 
 

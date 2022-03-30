@@ -24,6 +24,7 @@ from ote_cli.registry import Registry
 
 from ote_cli.utils.tests import (
     create_venv,
+    get_ote_root_dir,
     get_some_vars,
     ote_demo_deployment_testing,
     ote_demo_testing,
@@ -55,9 +56,10 @@ args = {
 }
 
 root = '/tmp/ote_cli/'
-ote_dir = os.getcwd()
+ote_dir = get_ote_root_dir()
 
-templates = Registry('external').filter(task_type='ROTATED_DETECTION').templates
+external_dir = os.path.join(ote_dir, 'external')
+templates = Registry(external_dir).filter(task_type='ROTATED_DETECTION').templates
 templates_ids = [template.model_template_id for template in templates]
 
 
