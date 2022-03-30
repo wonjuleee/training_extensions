@@ -138,12 +138,14 @@ class RotatedDetectionTrainingTestParameters(DefaultOTETestCreationParametersInt
     def test_bunches(self) -> List[Dict[str, Any]]:
         test_bunches = [
                 dict(
-                    model_name='Custom_Rotated_Detection_via_Instance_Segmentation_MaskRCNN_ResNet50',
+                    model_name=['Custom_Rotated_Detection_via_Instance_Segmentation_MaskRCNN_ResNet50',
+                                'Custom_Rotated_Detection_via_Instance_Segmentation_MaskRCNN_EfficientNetB2B'],
                     dataset_name='rotated_detection_short',
                     usecase='precommit',
                 ),
                 dict(
-                    model_name='Custom_Rotated_Detection_via_Instance_Segmentation_MaskRCNN_ResNet50',
+                    model_name=['Custom_Rotated_Detection_via_Instance_Segmentation_MaskRCNN_ResNet50',
+                                'Custom_Rotated_Detection_via_Instance_Segmentation_MaskRCNN_EfficientNetB2B'],
                     dataset_name='rotated_detection',
                     num_training_iters=KEEP_CONFIG_FIELD_VALUE,
                     batch_size=KEEP_CONFIG_FIELD_VALUE,
@@ -192,11 +194,11 @@ def params_factories_for_test_actions_fx(current_test_parameters_fx,
             pytest.skip('The parameter "--dataset-definitions" is not set')
 
         model_name = test_parameters['model_name']
-        if "Detection" in model_name:
+        if "Custom_Object_Detection" in model_name:
             domain = Domain.DETECTION
-        elif "Instance_Segmentation" in model_name:
+        elif "Custom_Counting_Instance_Segmentation" in model_name:
             domain = Domain.INSTANCE_SEGMENTATION
-        elif "Rotated_Detection" in model_name:
+        elif "Custom_Rotated_Detection" in model_name:
             domain = Domain.ROTATED_DETECTION
         else:
             domain = None
@@ -229,11 +231,11 @@ def params_factories_for_test_actions_fx(current_test_parameters_fx,
             pytest.skip('The parameter "--dataset-definitions" is not set')
 
         model_name = test_parameters['model_name']
-        if "Detection" in model_name:
+        if "Custom_Object_Detection" in model_name:
             domain = Domain.DETECTION
-        elif "Instance_Segmentation" in model_name:
+        elif "Custom_Counting_Instance_Segmentation" in model_name:
             domain = Domain.INSTANCE_SEGMENTATION
-        elif "Rotated_Detection" in model_name:
+        elif "Custom_Rotated_Detection" in model_name:
             domain = Domain.ROTATED_DETECTION
         else:
             domain = None
@@ -287,11 +289,11 @@ def data_collector_fx(request) -> DataCollector:
         if 'usecase' not in setup:
             setup['usecase'] = setup['test_parameters'].get('usecase')
     model_name = setup['test_parameters'].get('model_name')
-    if "Detection" in model_name:
+    if "Custom_Object_Detection" in model_name:
         subject = 'custom-object-detection'
-    elif "Instance_Segmentation" in model_name:
+    elif "Custom_Counting_Instance_Segmentation" in model_name:
         subject = 'custom-counting-instance-seg'
-    elif "Rotated_Detection" in model_name:
+    elif "Custom_Rotated_Detection" in model_name:
         subject = 'rotated_detection'
     else:
         subject = None
