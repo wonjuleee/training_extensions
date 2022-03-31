@@ -3,6 +3,7 @@
 #
 
 import itertools
+import re
 from abc import ABC, abstractmethod
 from collections import OrderedDict
 from copy import deepcopy
@@ -120,6 +121,21 @@ class OTETestCreationParametersInterface(ABC):
         """
         raise NotImplementedError("The method is not implemented")
 
+    @abstractmethod
+    def xfailed_tests_regexps(self) -> Dict[str, str]:
+        """
+        The method returns an OrderedDict that points which tests
+        related to this test helper should be xfail-ed.
+        The keys of the OrderedDict should be strings that are regexp-s
+        that will be applied to the test's parameters string
+        (see the fixture current_test_parameters_string_fx),
+        if some of the regexp-s is matched to the parameters string of the current test,
+        the test will be xfailed.
+        The values of the OrderedDict should be the strings that will be used for xfailing,
+        they should contain reasons why the test is xfail-ed (probably with Jira tickets).
+        """
+        raise NotImplementedError("The method is not implemented")
+
 
 class DefaultOTETestCreationParametersInterface(OTETestCreationParametersInterface):
     """
@@ -159,6 +175,9 @@ class DefaultOTETestCreationParametersInterface(OTETestCreationParametersInterfa
             "batch_size": 2,
         }
         return deepcopy(DEFAULT_TEST_PARAMETERS)
+
+    def xfailed_tests_regexps(self) -> Dict[str, str]:
+        return OrderedDict()
 
 
 class OTETestHelper:
@@ -215,6 +234,19 @@ class OTETestHelper:
         self.default_test_parameters = (
             test_creation_parameters.default_test_parameters()
         )
+
+        xfailed_tests_regexps = test_creation_parameters.xfailed_tests_regexps()
+        assert isinstance(xfailed_tests_regexps, OrderedDict)
+        for cur_regex_str, cur_reason in list(xfailed_tests_regexps.keys()):
+            assert isinstance(cur_regex_str, str)
+            assert isinstance(cur_reason, str)
+            try:
+                cur_regex = re.compile(cur_regex_str)
+            except re.error:
+                raise ValueError(f"Cannot compile xfail regex `{cur_regex_str}`")
+            xfailed_tests_regexps[cur_regex_str] = (cur_regex, cur_reason)
+
+        self.xfailed_tests_regexps = xfailed_tests_regexps
 
         self._cache = OTETestHelper._Cache()
 
@@ -345,3 +377,15 @@ class OTETestHelper:
             logger.info("OTETestHelper: parameters were not changed -- cache is kept")
 
         return self._cache.get()
+
+    def xfail_current_test_if_required(self, current_test_parameters_string):
+        """
+        This method gets the current_test_parameters_string as from the fixture
+        current_test_parameters_string_fx, and checks if the string is matched w.r.t.
+        one of regular expression received from xfailed_tests_regexps OrderedDict.
+        The match is made by the standard function `re.search`.
+        """
+        for cur_regex_str, (cur_regex, cur_reason) in self.xfailed_tests_regexps:
+            should_xfail = cur_regex.search(current_test_parameters_string)
+            if should_xfail:
+                pytest.xfail(cur_reason)

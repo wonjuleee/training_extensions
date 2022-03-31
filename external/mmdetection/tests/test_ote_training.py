@@ -242,7 +242,12 @@ class TestOTEReallifeObjectDetection(OTETrainingTestInterface):
         return params_factories_for_test_actions
 
     @pytest.fixture
-    def test_case_fx(self, current_test_parameters_fx, params_factories_for_test_actions_fx):
+    def xfail_current_test_if_required_fx(self, current_test_parameters_string_fx):
+        type(self).helper.xfail_current_test_if_required(current_test_parameters_string_fx)
+
+    @pytest.fixture
+    def test_case_fx(self, current_test_parameters_fx, params_factories_for_test_actions_fx,
+                     xfail_current_test_if_required_fx):
         """
         This fixture returns the test case class OTEIntegrationTestCase that should be used for the current test.
         Note that the cache from the test helper allows to store the instance of the class
