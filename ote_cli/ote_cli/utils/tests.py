@@ -43,7 +43,7 @@ def get_some_vars(template, root):
 def create_venv(algo_backend_dir, work_dir):
     venv_dir = f"{work_dir}/venv"
     if not os.path.exists(venv_dir):
-        assert run([f"./{algo_backend_dir}/init_venv.sh", venv_dir]).returncode == 0
+        assert run([os.path.join(get_ote_root_dir(), algo_backend_dir, 'init_venv.sh'), venv_dir]).returncode == 0
         assert (
             run(
                 [f"{work_dir}/venv/bin/python", "-m", "pip", "install", "-e", "ote_cli"]
