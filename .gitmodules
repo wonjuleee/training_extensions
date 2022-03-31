@@ -1,7 +1,7 @@
 [submodule "external/mmdetection"]
 	path = external/mmdetection/submodule
 	url = ../../openvinotoolkit/mmdetection
-	branch = sb/mmdet_with_mmdeploy_updates
+	branch = sb/mmdet_pip
 [submodule "external/deep-object-reid"]
 	path = external/deep-object-reid/submodule
 	url = ../../openvinotoolkit/deep-object-reid
