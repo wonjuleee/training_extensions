@@ -28,7 +28,7 @@ def get_ote_root_dir():
 
 
 def get_template_rel_dir(template):
-    return os.path.dirname(os.path.relpath(template.model_template_path))
+    return os.path.dirname(os.path.relpath(template.model_template_path, get_ote_root_dir()))
 
 
 def get_some_vars(template, root):
