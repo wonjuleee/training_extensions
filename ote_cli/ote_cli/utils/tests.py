@@ -95,7 +95,11 @@ def patch_demo_py(src_path, dst_path):
 
 
 def ote_train_testing(template, root, ote_dir, args):
+    #TODO: Should be remove after debug
+    print(f'{template=}, {root=}, {ote_dir=}, {args=} ')
     work_dir, template_work_dir, _ = get_some_vars(template, root)
+    #TODO: Should be remove after debug
+    print(f'{work_dir=}, {template_work_dir=}')
     command_line = [
         "ote",
         "train",
@@ -112,6 +116,8 @@ def ote_train_testing(template, root, ote_dir, args):
         f"{template_work_dir}/trained_{template.model_template_id}",
     ]
     command_line.extend(args["train_params"])
+    #TODO: Should be remove after debug
+    print(f'{command_line=}')
     assert run(command_line, env=collect_env_vars(work_dir)).returncode == 0
     assert os.path.exists(
         f"{template_work_dir}/trained_{template.model_template_id}/weights.pth"
