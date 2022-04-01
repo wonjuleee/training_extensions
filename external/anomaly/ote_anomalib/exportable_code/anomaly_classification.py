@@ -8,6 +8,7 @@ from typing import Any, Dict
 
 import cv2
 import numpy as np
+from ote_sdk.utils.argument_checks import check_input_parameters_type
 
 from .base import AnomalyBase
 
@@ -17,6 +18,7 @@ class AnomalyClassification(AnomalyBase):
 
     __model__ = "anomaly_classification"
 
+    @check_input_parameters_type()
     def postprocess(self, outputs: Dict[str, np.ndarray], meta: Dict[str, Any]) -> float:
         """Resize the outputs of the model to original image size.
 

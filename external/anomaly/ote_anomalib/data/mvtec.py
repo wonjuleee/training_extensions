@@ -36,6 +36,7 @@ from ote_sdk.entities.model_template import TaskType
 from ote_sdk.entities.scored_label import ScoredLabel
 from ote_sdk.entities.shapes.rectangle import Rectangle
 from ote_sdk.entities.subset import Subset
+from ote_sdk.utils.argument_checks import MvtecDirCheck, check_input_parameters_type
 from ote_sdk.utils.segmentation_utils import create_annotation_from_segmentation_map
 from pandas.core.frame import DataFrame
 
@@ -59,6 +60,7 @@ class OteMvtecDataset:
     """
 
     # pylint: disable=too-many-instance-attributes
+    @check_input_parameters_type({"path": MvtecDirCheck})
     def __init__(
         self,
         path: Union[str, Path],

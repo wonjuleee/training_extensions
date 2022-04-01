@@ -23,8 +23,13 @@ from ote_sdk.entities.dataset_item import DatasetItemEntity
 from ote_sdk.entities.datasets import DatasetEntity
 from ote_sdk.entities.resultset import ResultSetEntity
 from ote_sdk.entities.shapes.rectangle import Rectangle
+from ote_sdk.utils.argument_checks import (
+    DatasetParamTypeCheck,
+    check_input_parameters_type,
+)
 
 
+@check_input_parameters_type({"dataset": DatasetParamTypeCheck})
 def split_local_global_dataset(dataset) -> Tuple[DatasetEntity, DatasetEntity]:
     """Split a dataset into globally and locally annotated items."""
     globally_annotated = []
@@ -65,7 +70,8 @@ def split_local_global_dataset(dataset) -> Tuple[DatasetEntity, DatasetEntity]:
     return global_gt_dataset, local_gt_dataset
 
 
-def split_local_global_resultset(resultset) -> Tuple[ResultSetEntity, ResultSetEntity]:
+@check_input_parameters_type()
+def split_local_global_resultset(resultset: ResultSetEntity) -> Tuple[ResultSetEntity, ResultSetEntity]:
     """Split resultset based on the type of available annotations."""
     # splits the dataset
     globally_annotated = []
@@ -160,6 +166,7 @@ def split_local_global_resultset(resultset) -> Tuple[ResultSetEntity, ResultSetE
     return global_resultset, local_resultset
 
 
+@check_input_parameters_type({"dataset": DatasetParamTypeCheck})
 def contains_anomalous_images(dataset: DatasetEntity) -> bool:
     """Find the number of local annotations in a resultset."""
     for item in dataset:

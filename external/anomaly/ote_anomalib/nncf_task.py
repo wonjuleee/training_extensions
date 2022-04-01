@@ -46,6 +46,10 @@ from ote_sdk.usecases.tasks.interfaces.optimization_interface import (
     IOptimizationTask,
     OptimizationType,
 )
+from ote_sdk.utils.argument_checks import (
+    DatasetParamTypeCheck,
+    check_input_parameters_type,
+)
 from pytorch_lightning import Trainer
 
 logger = get_logger(__name__)
@@ -54,6 +58,7 @@ logger = get_logger(__name__)
 class AnomalyNNCFTask(AnomalyInferenceTask, IOptimizationTask):
     """Base Anomaly Task."""
 
+    @check_input_parameters_type()
     def __init__(self, task_environment: TaskEnvironment) -> None:
         """Task for compressing models using NNCF.
 
@@ -88,6 +93,7 @@ class AnomalyNNCFTask(AnomalyInferenceTask, IOptimizationTask):
             return
         raise RuntimeError("Not selected optimization algorithm")
 
+    @check_input_parameters_type()
     def load_model(self, ote_model: Optional[ModelEntity]) -> AnomalyModule:
         """Create and Load Anomalib Module from OTE Model.
 
@@ -151,6 +157,7 @@ class AnomalyNNCFTask(AnomalyInferenceTask, IOptimizationTask):
 
         return model
 
+    @check_input_parameters_type({"dataset": DatasetParamTypeCheck})
     def optimize(
         self,
         optimization_type: OptimizationType,

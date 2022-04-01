@@ -6,10 +6,12 @@ from logging import FileHandler, Handler, Logger, StreamHandler
 from typing import Dict, List, Optional
 
 import torch.distributed as dist
+from ote_sdk.utils.argument_checks import check_input_parameters_type
 
 logger_initialized: Dict[str, bool] = {}
 
 
+@check_input_parameters_type()
 def get_logger(
     name: str, log_file: Optional[str] = None, log_level: int = logging.INFO, file_mode: str = "w"
 ) -> Logger:
