@@ -50,6 +50,10 @@ from ote_sdk.usecases.tasks.interfaces.evaluate_interface import IEvaluationTask
 from ote_sdk.usecases.tasks.interfaces.export_interface import ExportType, IExportTask
 from ote_sdk.usecases.tasks.interfaces.inference_interface import IInferenceTask
 from ote_sdk.usecases.tasks.interfaces.unload_interface import IUnload
+from ote_sdk.utils.argument_checks import (
+    DatasetParamTypeCheck,
+    check_input_parameters_type,
+)
 from pytorch_lightning import Trainer
 
 logger = get_logger(__name__)
@@ -59,6 +63,7 @@ logger = get_logger(__name__)
 class AnomalyInferenceTask(IInferenceTask, IEvaluationTask, IExportTask, IUnload):
     """Base Anomaly Task."""
 
+    @check_input_parameters_type()
     def __init__(self, task_environment: TaskEnvironment) -> None:
         """Train, Infer, Export, Optimize and Deploy an Anomaly Classification Task.
 
@@ -102,6 +107,7 @@ class AnomalyInferenceTask(IInferenceTask, IEvaluationTask, IExportTask, IUnload
 
         return config
 
+    @check_input_parameters_type()
     def load_model(self, ote_model: Optional[ModelEntity]) -> AnomalyModule:
         """Create and Load Anomalib Module from OTE Model.
 
@@ -149,6 +155,7 @@ class AnomalyInferenceTask(IInferenceTask, IEvaluationTask, IExportTask, IUnload
         with open(file=cancel_training_file_path, mode="a", encoding="utf-8"):
             pass
 
+    @check_input_parameters_type({"dataset": DatasetParamTypeCheck})
     def infer(self, dataset: DatasetEntity, inference_parameters: InferenceParameters) -> DatasetEntity:
         """Perform inference on a dataset.
 
@@ -175,6 +182,7 @@ class AnomalyInferenceTask(IInferenceTask, IEvaluationTask, IExportTask, IUnload
         self.trainer.predict(model=self.model, datamodule=datamodule)
         return dataset
 
+    @check_input_parameters_type()
     def evaluate(self, output_resultset: ResultSetEntity, evaluation_metric: Optional[str] = None) -> None:
         """Evaluate the performance on a result set.
 
@@ -211,6 +219,7 @@ class AnomalyInferenceTask(IInferenceTask, IEvaluationTask, IExportTask, IUnload
             opset_version=11,
         )
 
+    @check_input_parameters_type()
     def export(self, export_type: ExportType, output_model: ModelEntity) -> None:
         """Export model to OpenVINO IR.
 
@@ -258,6 +267,7 @@ class AnomalyInferenceTask(IInferenceTask, IEvaluationTask, IExportTask, IUnload
             "VERSION": 1,
         }
 
+    @check_input_parameters_type()
     def save_model(self, output_model: ModelEntity) -> None:
         """Save the model after training is completed.
 

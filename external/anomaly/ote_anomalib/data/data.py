@@ -27,6 +27,10 @@ from ote_sdk.entities.datasets import DatasetEntity
 from ote_sdk.entities.model_template import TaskType
 from ote_sdk.entities.shapes.polygon import Polygon
 from ote_sdk.entities.subset import Subset
+from ote_sdk.utils.argument_checks import (
+    DatasetParamTypeCheck,
+    check_input_parameters_type,
+)
 from ote_sdk.utils.dataset_utils import (
     contains_anomalous_images,
     split_local_global_dataset,
@@ -71,6 +75,7 @@ class OTEAnomalyDataset(Dataset):
         torch.Size([3, 256, 256])
     """
 
+    @check_input_parameters_type({"dataset": DatasetParamTypeCheck})
     def __init__(self, config: Union[DictConfig, ListConfig], dataset: DatasetEntity, task_type: TaskType):
         self.config = config
         self.dataset = dataset
@@ -85,6 +90,7 @@ class OTEAnomalyDataset(Dataset):
     def __len__(self) -> int:
         return len(self.dataset)
 
+    @check_input_parameters_type()
     def __getitem__(self, index: int) -> Dict[str, Union[int, Tensor]]:
         dataset_item = self.dataset[index]
         item: Dict[str, Union[int, Tensor]] = {}
@@ -131,6 +137,7 @@ class OTEAnomalyDataModule(LightningDataModule):
         torch.Size([32, 3, 256, 256])
     """
 
+    @check_input_parameters_type({"dataset": DatasetParamTypeCheck})
     def __init__(self, config: Union[DictConfig, ListConfig], dataset: DatasetEntity, task_type: TaskType) -> None:
         super().__init__()
         self.config = config

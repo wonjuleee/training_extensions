@@ -23,8 +23,10 @@ import anomalib
 from anomalib.config.config import get_configurable_parameters
 from omegaconf import DictConfig, ListConfig
 from ote_sdk.configuration.configurable_parameters import ConfigurableParameters
+from ote_sdk.utils.argument_checks import check_input_parameters_type
 
 
+@check_input_parameters_type()
 def get_anomalib_config(task_name: str, ote_config: ConfigurableParameters) -> Union[DictConfig, ListConfig]:
     """
     Create an anomalib config object that matches the values specified in the OTE config.
@@ -40,6 +42,7 @@ def get_anomalib_config(task_name: str, ote_config: ConfigurableParameters) -> U
     return anomalib_config
 
 
+@check_input_parameters_type()
 def update_anomalib_config(anomalib_config: Union[DictConfig, ListConfig], ote_config: ConfigurableParameters):
     """
     Overwrite the default parameter values in the anomalib config with the values specified in the OTE config. The

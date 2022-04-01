@@ -16,10 +16,13 @@ Progressbar Callback for OTE task
 # See the License for the specific language governing permissions
 # and limitations under the License.
 
-from typing import Optional, Union
+from typing import Any, List, Optional, Union
 
+import pytorch_lightning as pl
+from anomalib.models import AnomalyModule
 from ote_sdk.entities.inference_parameters import InferenceParameters
 from ote_sdk.entities.train_parameters import TrainParameters, default_progress_callback
+from ote_sdk.utils.argument_checks import check_input_parameters_type
 from pytorch_lightning.callbacks.progress import ProgressBar
 
 
@@ -28,6 +31,7 @@ class ProgressCallback(ProgressBar):
     Modifies progress callback to show completion of the entire training step
     """
 
+    @check_input_parameters_type()
     def __init__(self, parameters: Optional[Union[TrainParameters, InferenceParameters]] = None) -> None:
         super().__init__()
         self.current_epoch: int = 0
@@ -39,7 +43,8 @@ class ProgressCallback(ProgressBar):
         else:
             self.update_progress_callback = default_progress_callback
 
-    def on_train_start(self, trainer, pl_module):
+    @check_input_parameters_type()
+    def on_train_start(self, trainer: pl.Trainer, pl_module: AnomalyModule):
         """
         Store max epochs and current epoch from trainer
         """
@@ -48,21 +53,26 @@ class ProgressCallback(ProgressBar):
         self.max_epochs = trainer.max_epochs
         self._reset_progress()
 
-    def on_predict_start(self, trainer, pl_module):
+    @check_input_parameters_type()
+    def on_predict_start(self, trainer: pl.Trainer, pl_module: AnomalyModule):
         """
         Reset progress bar when prediction starts.
         """
         super().on_predict_start(trainer, pl_module)
         self._reset_progress()
 
-    def on_test_start(self, trainer, pl_module):
+    @check_input_parameters_type()
+    def on_test_start(self, trainer: pl.Trainer, pl_module: AnomalyModule):
         """
         Reset progress bar when testing starts.
         """
         super().on_test_start(trainer, pl_module)
         self._reset_progress()
 
-    def on_train_batch_end(self, trainer, pl_module, outputs, batch, batch_idx):
+    @check_input_parameters_type()
+    def on_train_batch_end(
+        self, trainer: pl.Trainer, pl_module: AnomalyModule, outputs: List[Any], batch: Any, batch_idx: int
+    ):
         """
         Adds training completion percentage to the progress bar
         """
@@ -70,14 +80,32 @@ class ProgressCallback(ProgressBar):
         self.current_epoch = trainer.current_epoch
         self._update_progress(stage="train")
 
-    def on_predict_batch_end(self, trainer, pl_module, outputs, batch, batch_idx, dataloader_idx):
+    @check_input_parameters_type()
+    def on_predict_batch_end(
+        self,
+        trainer: pl.Trainer,
+        pl_module: AnomalyModule,
+        outputs: List[Any],
+        batch: Any,
+        batch_idx: int,
+        dataloader_idx: int,
+    ):
         """
         Adds prediction completion percentage to the progress bar
         """
         super().on_predict_batch_end(trainer, pl_module, outputs, batch, batch_idx, dataloader_idx)
         self._update_progress(stage="predict")
 
-    def on_test_batch_end(self, trainer, pl_module, outputs, batch, batch_idx, dataloader_idx):
+    @check_input_parameters_type()
+    def on_test_batch_end(
+        self,
+        trainer: pl.Trainer,
+        pl_module: AnomalyModule,
+        outputs: List[Any],
+        batch: Any,
+        batch_idx: int,
+        dataloader_idx: int,
+    ):
         """
         Adds testing completion percentage to the progress bar
         """

@@ -66,6 +66,10 @@ from ote_sdk.usecases.tasks.interfaces.optimization_interface import (
     OptimizationType,
 )
 from ote_sdk.utils.anomaly_utils import create_detection_annotation_from_anomaly_heatmap
+from ote_sdk.utils.argument_checks import (
+    DatasetParamTypeCheck,
+    check_input_parameters_type,
+)
 from ote_sdk.utils.segmentation_utils import create_annotation_from_segmentation_map
 
 logger = get_logger(__name__)
@@ -80,6 +84,7 @@ class OTEOpenVINOAnomalyDataloader(DataLoader):
         inferencer (OpenVINOInferencer): OpenVINO Inferencer
     """
 
+    @check_input_parameters_type({"dataset": DatasetParamTypeCheck})
     def __init__(
         self,
         config: ADDict,
@@ -90,6 +95,7 @@ class OTEOpenVINOAnomalyDataloader(DataLoader):
         self.dataset = dataset
         self.inferencer = inferencer
 
+    @check_input_parameters_type()
     def __getitem__(self, index):
         image = self.dataset[index].numpy
         annotation = self.dataset[index].annotation_scene
@@ -109,6 +115,7 @@ class OpenVINOAnomalyTask(IInferenceTask, IEvaluationTask, IOptimizationTask, ID
         task_environment (TaskEnvironment): task environment of the trained anomaly model
     """
 
+    @check_input_parameters_type()
     def __init__(self, task_environment: TaskEnvironment) -> None:
         logger.info("Initializing the OpenVINO task.")
         self.task_environment = task_environment
@@ -135,6 +142,7 @@ class OpenVINOAnomalyTask(IInferenceTask, IEvaluationTask, IOptimizationTask, ID
         config = get_anomalib_config(task_name=task_name, ote_config=ote_config)
         return ADDict(OmegaConf.to_container(config))
 
+    @check_input_parameters_type()
     def infer(self, dataset: DatasetEntity, inference_parameters: InferenceParameters) -> DatasetEntity:
         """Perform Inference.
 
@@ -208,6 +216,7 @@ class OpenVINOAnomalyTask(IInferenceTask, IEvaluationTask, IOptimizationTask, ID
         )
         return meta_data
 
+    @check_input_parameters_type()
     def evaluate(self, output_resultset: ResultSetEntity, evaluation_metric: Optional[str] = None):
         """Evaluate the performance of the model.
 
@@ -246,6 +255,7 @@ class OpenVINOAnomalyTask(IInferenceTask, IEvaluationTask, IOptimizationTask, ID
 
         return algorithms
 
+    @check_input_parameters_type({"dataset": DatasetParamTypeCheck})
     def optimize(
         self,
         optimization_type: OptimizationType,
@@ -393,6 +403,7 @@ class OpenVINOAnomalyTask(IInferenceTask, IEvaluationTask, IOptimizationTask, ID
 
         return configuration
 
+    @check_input_parameters_type()
     def deploy(self, output_model: ModelEntity) -> None:
         """Exports the weights from ``output_model`` along with exportable code.
 

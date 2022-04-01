@@ -23,6 +23,10 @@ from ote_sdk.entities.datasets import DatasetEntity
 from ote_sdk.entities.model import ModelEntity
 from ote_sdk.entities.train_parameters import TrainParameters
 from ote_sdk.usecases.tasks.interfaces.training_interface import ITrainingTask
+from ote_sdk.utils.argument_checks import (
+    DatasetParamTypeCheck,
+    check_input_parameters_type,
+)
 from pytorch_lightning import Trainer
 
 logger = get_logger(__name__)
@@ -31,6 +35,7 @@ logger = get_logger(__name__)
 class AnomalyTrainingTask(AnomalyInferenceTask, ITrainingTask):
     """Base Anomaly Task."""
 
+    @check_input_parameters_type({"dataset": DatasetParamTypeCheck})
     def train(
         self,
         dataset: DatasetEntity,

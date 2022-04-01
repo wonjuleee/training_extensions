@@ -30,6 +30,10 @@ from ote_sdk.entities.model_template import TaskType
 from ote_sdk.entities.result_media import ResultMediaEntity
 from ote_sdk.entities.scored_label import ScoredLabel
 from ote_sdk.utils.anomaly_utils import create_detection_annotation_from_anomaly_heatmap
+from ote_sdk.utils.argument_checks import (
+    DatasetParamTypeCheck,
+    check_input_parameters_type,
+)
 from ote_sdk.utils.segmentation_utils import create_annotation_from_segmentation_map
 from pytorch_lightning.callbacks import Callback
 
@@ -39,6 +43,7 @@ logger = get_logger(__name__)
 class AnomalyInferenceCallback(Callback):
     """Callback that updates the OTE dataset during inference."""
 
+    @check_input_parameters_type({"ote_dataset": DatasetParamTypeCheck})
     def __init__(self, ote_dataset: DatasetEntity, labels: List[LabelEntity], task_type: TaskType):
         self.ote_dataset = ote_dataset
         self.normal_label = [label for label in labels if label.name == LabelNames.normal][0]
@@ -46,6 +51,7 @@ class AnomalyInferenceCallback(Callback):
         self.task_type = task_type
         self.label_map = {0: self.normal_label, 1: self.anomalous_label}
 
+    @check_input_parameters_type()
     def on_predict_epoch_end(self, _trainer: pl.Trainer, pl_module: AnomalyModule, outputs: List[Any]):
         """Call when the predict epoch ends."""
         outputs = outputs[0]
