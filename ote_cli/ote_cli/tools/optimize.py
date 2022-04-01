@@ -150,11 +150,15 @@ def main():
 
     output_model = ModelEntity(dataset, environment.get_model_configuration())
 
+    def update_progress(progress, score=None):
+        print(f'\n\n\nProgress: {progress}\n\n\n')
+    optimization_parameters = OptimizationParameters(update_progress=update_progress)
+
     task.optimize(
         OptimizationType.POT if is_pot else OptimizationType.NNCF,
         dataset,
         output_model,
-        OptimizationParameters(),
+        optimization_parameters,
     )
 
     save_model_data(output_model, args.save_model_to)

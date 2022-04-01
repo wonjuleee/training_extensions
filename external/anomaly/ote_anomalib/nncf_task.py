@@ -40,7 +40,7 @@ from ote_sdk.entities.model import (
     ModelPrecision,
     OptimizationMethod,
 )
-from ote_sdk.entities.optimization_parameters import OptimizationParameters
+from ote_sdk.entities.optimization_parameters import OptimizationParameters, default_progress_callback
 from ote_sdk.entities.task_environment import TaskEnvironment
 from ote_sdk.usecases.tasks.interfaces.optimization_interface import (
     IOptimizationTask,
@@ -173,9 +173,16 @@ class AnomalyNNCFTask(AnomalyInferenceTask, IOptimizationTask):
 
         datamodule = OTEAnomalyDataModule(config=self.config, dataset=dataset, task_type=self.task_type)
 
+        if optimization_parameters is not None:
+            update_progress_callback = optimization_parameters.update_progress
+        else:
+            update_progress_callback = default_progress_callback
+        progress_callback = ProgressCallback(update_progress_callback=update_progress_callback)
+        progress_callback.on_model_loaded()
+
         nncf_callback = NNCFCallback(nncf_config=self.optimization_config["nncf_config"])
         callbacks = [
-            ProgressCallback(parameters=optimization_parameters),
+            progress_callback,
             MinMaxNormalizationCallback(),
             nncf_callback,
         ]
