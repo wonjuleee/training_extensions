@@ -96,7 +96,7 @@ class OTEOpenVINOAnomalyDataloader(DataLoader):
         self.inferencer = inferencer
 
     @check_input_parameters_type()
-    def __getitem__(self, index):
+    def __getitem__(self, index: int):
         image = self.dataset[index].numpy
         annotation = self.dataset[index].annotation_scene
         inputs = self.inferencer.pre_process(image)
