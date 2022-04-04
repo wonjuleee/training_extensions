@@ -42,6 +42,7 @@ class ProgressCallback(ProgressBar):
 
         self.model_is_loaded = False
         self.model_is_initialized = False
+        self.main_stage_started = False
         self.train_ended = False
 
         self.update_progress_callback = update_progress_callback
@@ -62,6 +63,7 @@ class ProgressCallback(ProgressBar):
         self.on_model_loaded("train")
         self.on_model_initialized("train")
 
+        self.main_stage_started = True
         self.current_epoch = trainer.current_epoch
         self.max_epochs = trainer.max_epochs
         self._update_progress(stage="train")
@@ -73,6 +75,7 @@ class ProgressCallback(ProgressBar):
         super().on_predict_start(trainer, pl_module)
         self.on_model_loaded("predict")
         self.on_model_initialized("predict")
+        self.main_stage_started = True
 
     def on_test_start(self, trainer, pl_module):
         """
@@ -81,6 +84,7 @@ class ProgressCallback(ProgressBar):
         super().on_test_start(trainer, pl_module)
         self.on_model_loaded("test")
         self.on_model_initialized("test")
+        self.main_stage_started = True
 
     def on_train_batch_end(self, trainer, pl_module, outputs, batch, batch_idx):
         """
@@ -117,19 +121,22 @@ class ProgressCallback(ProgressBar):
             stage (str, optional): Train or Test stages. Defaults to "train".
         """
 
-        if stage == "train":
-            # Progress is calculated on the upper bound (max epoch).
-            # Early stopping might stop the training before the progress reaches 100%
-            main_stage_relative_progress = 1.0 if self.train_ended else (
-                (self.train_batch_idx + self.current_epoch * self.total_train_batches)
-                / (self.total_train_batches * self.max_epochs)
-            )
-        elif stage == "predict":
-            main_stage_relative_progress = self.predict_batch_idx / (self.total_predict_batches + 1e-10)
-        elif stage == "test":
-            main_stage_relative_progress = self.test_batch_idx / (self.total_test_batches + 1e-10)
+        if not self.main_stage_started:
+            main_stage_relative_progress = 0.0
         else:
-            raise ValueError(f"Unknown stage {stage}. Available: train, predict and test")
+            if stage == "train":
+                # Progress is calculated on the upper bound (max epoch).
+                # Early stopping might stop the training before the progress reaches 100%
+                main_stage_relative_progress = 1.0 if self.train_ended else (
+                    (self.train_batch_idx + self.current_epoch * self.total_train_batches)
+                    / (self.total_train_batches * self.max_epochs)
+                )
+            elif stage == "predict":
+                main_stage_relative_progress = self.predict_batch_idx / (self.total_predict_batches + 1e-10)
+            elif stage == "test":
+                main_stage_relative_progress = self.test_batch_idx / (self.total_test_batches + 1e-10)
+            else:
+                raise ValueError(f"Unknown stage {stage}. Available: train, predict and test")
 
         progress = main_stage_relative_progress * self.main_stage_percentage
         if self.model_is_loaded:
