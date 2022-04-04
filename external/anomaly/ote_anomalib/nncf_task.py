@@ -177,7 +177,9 @@ class AnomalyNNCFTask(AnomalyInferenceTask, IOptimizationTask):
             update_progress_callback = optimization_parameters.update_progress
         else:
             update_progress_callback = default_progress_callback
-        progress_callback = ProgressCallback(update_progress_callback=update_progress_callback)
+        progress_callback = ProgressCallback(update_progress_callback=update_progress_callback,
+                                             loading_stage_progress_percentage=5,
+                                             initialization_stage_progress_percentage=5)
         progress_callback.on_model_loaded()
 
         nncf_callback = NNCFCallback(nncf_config=self.optimization_config["nncf_config"])
