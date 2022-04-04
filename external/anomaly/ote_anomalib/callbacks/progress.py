@@ -76,6 +76,7 @@ class ProgressCallback(ProgressBar):
         self.on_model_loaded("predict")
         self.on_model_initialized("predict")
         self.main_stage_started = True
+        self._update_progress(stage="predict")
 
     def on_test_start(self, trainer, pl_module):
         """
@@ -85,6 +86,7 @@ class ProgressCallback(ProgressBar):
         self.on_model_loaded("test")
         self.on_model_initialized("test")
         self.main_stage_started = True
+        self._update_progress(stage="test")
 
     def on_train_batch_end(self, trainer, pl_module, outputs, batch, batch_idx):
         """
