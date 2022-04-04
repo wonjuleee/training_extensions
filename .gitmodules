@@ -11,4 +11,4 @@
 [submodule "external/mmdeploy"]
 	path = external/mmdeploy/submodule
 	url = https://github.com/open-mmlab/mmdeploy.git
-	branch = dev-v0.4.0
+	branch = v0.4.0
