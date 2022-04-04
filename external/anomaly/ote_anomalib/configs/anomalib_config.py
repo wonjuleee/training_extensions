@@ -19,15 +19,16 @@ Configurable parameter conversion between OTE and Anomalib.
 from pathlib import Path
 from typing import Union
 
-import anomalib
-from anomalib.config.config import get_configurable_parameters
 from omegaconf import DictConfig, ListConfig
-from ote_sdk.configuration.configurable_parameters import ConfigurableParameters
+from ote_sdk.configuration.elements import ParameterGroup
 from ote_sdk.utils.argument_checks import check_input_parameters_type
+
+from anomalib.config.config import get_configurable_parameters
+import anomalib
 
 
 @check_input_parameters_type()
-def get_anomalib_config(task_name: str, ote_config: ConfigurableParameters) -> Union[DictConfig, ListConfig]:
+def get_anomalib_config(task_name: str, ote_config: ParameterGroup) -> Union[DictConfig, ListConfig]:
     """
     Create an anomalib config object that matches the values specified in the OTE config.
 
@@ -43,7 +44,7 @@ def get_anomalib_config(task_name: str, ote_config: ConfigurableParameters) -> U
 
 
 @check_input_parameters_type()
-def update_anomalib_config(anomalib_config: Union[DictConfig, ListConfig], ote_config: ConfigurableParameters):
+def update_anomalib_config(anomalib_config: Union[DictConfig, ListConfig], ote_config: ParameterGroup):
     """
     Overwrite the default parameter values in the anomalib config with the values specified in the OTE config. The
     function is recursively called for each parameter group present in the OTE config.
