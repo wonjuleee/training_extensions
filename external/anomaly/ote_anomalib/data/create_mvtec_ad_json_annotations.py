@@ -49,9 +49,15 @@ from typing import Any, Dict, List, Optional
 
 import cv2
 import pandas as pd
+from ote_sdk.utils.argument_checks import (
+    DirectoryPathCheck,
+    ImageFilePathCheck,
+    check_input_parameters_type,
+)
 from anomalib.data.mvtec import make_mvtec_dataset
 
 
+@check_input_parameters_type({"mask_path": ImageFilePathCheck})
 def create_bboxes_from_mask(mask_path: str) -> List[List[float]]:
     """Create bounding box from binary mask.
 
@@ -87,6 +93,7 @@ def create_bboxes_from_mask(mask_path: str) -> List[List[float]]:
     return bboxes
 
 
+@check_input_parameters_type({"mask_path": ImageFilePathCheck})
 def create_polygons_from_mask(mask_path: str) -> List[List[float]]:
     """Create polygons from binary mask.
 
@@ -105,6 +112,7 @@ def create_polygons_from_mask(mask_path: str) -> List[List[float]]:
     return polygons
 
 
+@check_input_parameters_type()
 def create_classification_json_items(pd_items: pd.DataFrame) -> Dict[str, Any]:
     """Create JSON items for the classification task.
 
@@ -124,6 +132,7 @@ def create_classification_json_items(pd_items: pd.DataFrame) -> Dict[str, Any]:
     return json_items
 
 
+@check_input_parameters_type()
 def create_detection_json_items(pd_items: pd.DataFrame) -> Dict[str, Any]:
     """Create JSON items for the detection task.
 
@@ -143,6 +152,7 @@ def create_detection_json_items(pd_items: pd.DataFrame) -> Dict[str, Any]:
     return json_items
 
 
+@check_input_parameters_type()
 def create_segmentation_json_items(pd_items: pd.DataFrame) -> Dict[str, Any]:
     """Create JSON items for the segmentation task.
 
@@ -162,6 +172,7 @@ def create_segmentation_json_items(pd_items: pd.DataFrame) -> Dict[str, Any]:
     return json_items
 
 
+@check_input_parameters_type({"file": DirectoryPathCheck})
 def save_json_items(json_items: Dict[str, Any], file: str) -> None:
     """Save JSON items to file.
 
@@ -173,6 +184,7 @@ def save_json_items(json_items: Dict[str, Any], file: str) -> None:
         json.dump(json_items, f)
 
 
+@check_input_parameters_type({"data_path": DirectoryPathCheck, "annotation_path": DirectoryPathCheck})
 def create_task_annotations(task: str, data_path: str, annotation_path: str) -> None:
     """Create MVTec AD categories for a given task.
 
@@ -203,6 +215,7 @@ def create_task_annotations(task: str, data_path: str, annotation_path: str) -> 
         save_json_items(json_items, f"{annotation_path}/{split}.json")
 
 
+@check_input_parameters_type({"data_path": DirectoryPathCheck, "annotation_path": DirectoryPathCheck})
 def create_mvtec_ad_category_annotations(data_path: str, annotation_path: str) -> None:
     """Create MVTec AD category annotations for classification, detection and segmentation tasks.
 
@@ -214,6 +227,7 @@ def create_mvtec_ad_category_annotations(data_path: str, annotation_path: str) -
         create_task_annotations(task, data_path, annotation_path)
 
 
+@check_input_parameters_type({"mvtec_data_path": DirectoryPathCheck, "mvtec_annotation_path": DirectoryPathCheck})
 def create_mvtec_ad_annotations(mvtec_data_path: str, mvtec_annotation_path: Optional[str] = None) -> None:
     """Create JSON annotations for MVTec AD dataset.
 
