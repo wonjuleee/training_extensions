@@ -16,7 +16,7 @@ Progressbar Callback for OTE task
 # See the License for the specific language governing permissions
 # and limitations under the License.
 
-from typing import Any, Dict, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 
 import pytorch_lightning as pl
 from anomalib.models import AnomalyModule
@@ -75,7 +75,7 @@ class ProgressCallback(ProgressBar):
             self,
             trainer: pl.Trainer,
             pl_module: AnomalyModule,
-            outputs: Union[Dict[str, Any], Tensor],
+            outputs: Union[Dict[str, Any], List[Any], Tensor],
             batch: Any,
             batch_idx: int
     ):
@@ -91,7 +91,7 @@ class ProgressCallback(ProgressBar):
         self,
         trainer: pl.Trainer,
         pl_module: AnomalyModule,
-        outputs: Union[Dict[str, Any], Tensor],
+        outputs: Union[Dict[str, Any], List[Any], Tensor],
         batch: Any,
         batch_idx: int,
         dataloader_idx: int,
@@ -107,7 +107,7 @@ class ProgressCallback(ProgressBar):
         self,
         trainer: pl.Trainer,
         pl_module: AnomalyModule,
-        outputs: Union[Dict[str, Any], Tensor],
+        outputs: Union[Dict[str, Any], List[Any], Tensor],
         batch: Any,
         batch_idx: int,
         dataloader_idx: int,
