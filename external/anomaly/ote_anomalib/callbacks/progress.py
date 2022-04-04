@@ -16,6 +16,8 @@ Progressbar Callback for OTE task
 # See the License for the specific language governing permissions
 # and limitations under the License.
 
+from typing import Callable, Union
+
 from ote_sdk.entities.train_parameters import UpdateProgressCallback
 from pytorch_lightning.callbacks.progress import ProgressBar
 
@@ -25,7 +27,8 @@ class ProgressCallback(ProgressBar):
     Modifies progress callback to show completion of the entire training step
     """
 
-    def __init__(self, update_progress_callback: UpdateProgressCallback, loading_stage_progress_percentage: int = 0,
+    def __init__(self, update_progress_callback: Union[UpdateProgressCallback, Callable[[int], None]],
+                 loading_stage_progress_percentage: int = 0,
                  initialization_stage_progress_percentage: int = 0) -> None:
         super().__init__()
         self.current_epoch: int = 0
@@ -138,4 +141,4 @@ class ProgressCallback(ProgressBar):
 
     def _update_progress(self, stage: str):
         progress = self._get_progress(stage)
-        self.update_progress_callback(progress)
+        self.update_progress_callback(int(progress))
