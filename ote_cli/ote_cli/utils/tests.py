@@ -12,19 +12,14 @@
 # See the License for the specific language governing permissions
 # and limitations under the License.
 
+from copy import deepcopy
 import json
 import os
 import shutil
 from subprocess import run  # nosec
 
 import pytest
-
-
-def get_ote_root_dir():
-    cur_file_path = os.path.realpath(__file__)
-    cur_file_dir = os.path.dirname(cur_file_path)
-    ote_cli_path = os.path.dirname(os.path.dirname(cur_file_dir))
-    return os.path.dirname(ote_cli_path)
+from ote_cli.registry import get_ote_root_dir
 
 
 def get_template_rel_dir(template):
@@ -44,9 +39,12 @@ def create_venv(algo_backend_dir, work_dir):
     venv_dir = f"{work_dir}/venv"
     if not os.path.exists(venv_dir):
         assert run([os.path.join(get_ote_root_dir(), algo_backend_dir, 'init_venv.sh'), venv_dir]).returncode == 0
+        cur_env = deepcopy(os.environ)
+        cur_env["PATH"] = os.path.join(venv_dir, "bin") + ":" + cur_env.get("PATH", "")
         assert (
             run(
-                [f"{work_dir}/venv/bin/python", "-m", "pip", "install", "-e", os.path.join(get_ote_root_dir(), "ote_cli")]
+                [f"{work_dir}/venv/bin/python", "-m", "pip", "install", "-e", os.path.join(get_ote_root_dir(), "ote_cli")],
+                env=cur_env
             ).returncode
             == 0
         )

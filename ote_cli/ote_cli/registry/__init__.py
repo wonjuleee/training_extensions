@@ -16,9 +16,10 @@ Model templates registry.
 # See the License for the specific language governing permissions
 # and limitations under the License.
 
-from .registry import Registry, find_and_parse_model_template
+from .registry import Registry, find_and_parse_model_template, get_ote_root_dir
 
 __all__ = [
     "find_and_parse_model_template",
+    "get_ote_root_dir",
     "Registry",
 ]

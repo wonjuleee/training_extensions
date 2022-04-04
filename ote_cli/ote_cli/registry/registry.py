@@ -24,6 +24,13 @@ import yaml
 from ote_sdk.entities.model_template import parse_model_template
 
 
+def get_ote_root_dir():
+    cur_file_path = os.path.realpath(__file__)
+    cur_file_dir = os.path.dirname(cur_file_path)
+    ote_cli_path = os.path.dirname(os.path.dirname(cur_file_dir))
+    return os.path.dirname(ote_cli_path)
+
+
 class Registry:
     """
     Class that implements a model templates registry.
@@ -119,4 +126,4 @@ def find_and_parse_model_template(path_or_id):
 
     if os.path.exists(path_or_id):
         return parse_model_template(path_or_id)
-    return Registry(".").get(path_or_id)
+    return Registry(get_ote_root_dir()).get(path_or_id)
