@@ -16,7 +16,7 @@ Progressbar Callback for OTE task
 # See the License for the specific language governing permissions
 # and limitations under the License.
 
-from typing import Any, List, Optional, Union
+from typing import Any, Dict, Optional, Union
 
 import pytorch_lightning as pl
 from anomalib.models import AnomalyModule
@@ -24,6 +24,7 @@ from ote_sdk.entities.inference_parameters import InferenceParameters
 from ote_sdk.entities.train_parameters import TrainParameters, default_progress_callback
 from ote_sdk.utils.argument_checks import check_input_parameters_type
 from pytorch_lightning.callbacks.progress import ProgressBar
+from torch import Tensor
 
 
 class ProgressCallback(ProgressBar):
@@ -71,7 +72,12 @@ class ProgressCallback(ProgressBar):
 
     @check_input_parameters_type()
     def on_train_batch_end(
-        self, trainer: pl.Trainer, pl_module: AnomalyModule, outputs: List[Any], batch: Any, batch_idx: int
+            self,
+            trainer: pl.Trainer,
+            pl_module: AnomalyModule,
+            outputs: Union[Dict[str, Any], Tensor],
+            batch: Any,
+            batch_idx: int
     ):
         """
         Adds training completion percentage to the progress bar
@@ -85,7 +91,7 @@ class ProgressCallback(ProgressBar):
         self,
         trainer: pl.Trainer,
         pl_module: AnomalyModule,
-        outputs: List[Any],
+        outputs: Union[Dict[str, Any], Tensor],
         batch: Any,
         batch_idx: int,
         dataloader_idx: int,
@@ -101,7 +107,7 @@ class ProgressCallback(ProgressBar):
         self,
         trainer: pl.Trainer,
         pl_module: AnomalyModule,
-        outputs: List[Any],
+        outputs: Union[Dict[str, Any], Tensor],
         batch: Any,
         batch_idx: int,
         dataloader_idx: int,

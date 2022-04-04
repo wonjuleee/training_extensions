@@ -147,7 +147,7 @@ class TestProgressCallbackInputParamsValidation:
         correct_values_dict = {
             "trainer": pl.Trainer(),
             "pl_module": MockAnomalyModule(),
-            "outputs": ["some", "outputs"],
+            "outputs": {"some": "outputs"},
             "batch": "batch data",
             "batch_idx": 1,
         }
@@ -159,6 +159,8 @@ class TestProgressCallbackInputParamsValidation:
             ("pl_module", unexpected_str),
             # Unexpected string is specified as "outputs" parameter
             ("outputs", unexpected_str),
+            # Unexpected int is specified as "outputs" key
+            ("outputs", {1: "some data"}),
             # Unexpected string is specified as "batch_idx" parameter
             ("batch_idx", unexpected_str),
         ]
@@ -186,7 +188,7 @@ class TestProgressCallbackInputParamsValidation:
         correct_values_dict = {
             "trainer": pl.Trainer(),
             "pl_module": MockAnomalyModule(),
-            "outputs": ["some", "outputs"],
+            "outputs": {"some": "outputs"},
             "batch": "batch data",
             "batch_idx": 1,
             "dataloader_idx": 1,
@@ -199,6 +201,8 @@ class TestProgressCallbackInputParamsValidation:
             ("pl_module", unexpected_str),
             # Unexpected string is specified as "outputs" parameter
             ("outputs", unexpected_str),
+            # Unexpected int is specified as "outputs" key
+            ("outputs", {1: "some data"}),
             # Unexpected string is specified as "batch_idx" parameter
             ("batch_idx", unexpected_str),
             # Unexpected string is specified as "dataloader_idx" parameter
@@ -228,7 +232,7 @@ class TestProgressCallbackInputParamsValidation:
         correct_values_dict = {
             "trainer": pl.Trainer(),
             "pl_module": MockAnomalyModule(),
-            "outputs": ["some", "outputs"],
+            "outputs": {"some": "outputs"},
             "batch": "batch data",
             "batch_idx": 1,
             "dataloader_idx": 1,
@@ -241,6 +245,8 @@ class TestProgressCallbackInputParamsValidation:
             ("pl_module", unexpected_str),
             # Unexpected string is specified as "outputs" parameter
             ("outputs", unexpected_str),
+            # Unexpected int is specified as "outputs" key
+            ("outputs", {1: "some data"}),
             # Unexpected string is specified as "batch_idx" parameter
             ("batch_idx", unexpected_str),
             # Unexpected string is specified as "dataloader_idx" parameter
