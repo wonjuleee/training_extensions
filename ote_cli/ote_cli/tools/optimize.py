@@ -150,11 +150,20 @@ def main():
 
     output_model = ModelEntity(dataset, environment.get_model_configuration())
 
+    from ote_sdk.utils.time_utils import TimeEstimator
+    import datetime
+    time_estimator = TimeEstimator()
+    def update_progress(progress, score=None):
+        time_delta = time_estimator.time_remaining_from_progress(progress)
+        total_seconds = (datetime.datetime.fromtimestamp(time_delta) - datetime.datetime.fromtimestamp(0)).total_seconds()
+        print(f'\n\n\nProgress: {progress:.2f}. ETA: {total_seconds} \n\n\n')
+    optimization_parameters = OptimizationParameters(update_progress=update_progress)
+
     task.optimize(
         OptimizationType.POT if is_pot else OptimizationType.NNCF,
         dataset,
         output_model,
-        OptimizationParameters(),
+        optimization_parameters,
     )
 
     save_model_data(output_model, args.save_model_to)
