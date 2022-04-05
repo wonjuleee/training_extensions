@@ -21,6 +21,7 @@ from typing import Any, Dict, List, Optional, Union
 import pytorch_lightning as pl
 from anomalib.models import AnomalyModule
 from ote_sdk.entities.inference_parameters import InferenceParameters
+from ote_sdk.entities.optimization_parameters import OptimizationParameters
 from ote_sdk.entities.train_parameters import TrainParameters, default_progress_callback
 from ote_sdk.utils.argument_checks import check_input_parameters_type
 from pytorch_lightning.callbacks.progress import ProgressBar
@@ -33,7 +34,9 @@ class ProgressCallback(ProgressBar):
     """
 
     @check_input_parameters_type()
-    def __init__(self, parameters: Optional[Union[TrainParameters, InferenceParameters]] = None) -> None:
+    def __init__(
+        self, parameters: Optional[Union[TrainParameters, InferenceParameters, OptimizationParameters]] = None
+    ) -> None:
         super().__init__()
         self.current_epoch: int = 0
         self.max_epochs: int = 0
@@ -72,12 +75,12 @@ class ProgressCallback(ProgressBar):
 
     @check_input_parameters_type()
     def on_train_batch_end(
-            self,
-            trainer: pl.Trainer,
-            pl_module: AnomalyModule,
-            outputs: Union[Dict[str, Any], List[Any], Tensor],
-            batch: Any,
-            batch_idx: int
+        self,
+        trainer: pl.Trainer,
+        pl_module: AnomalyModule,
+        outputs: Union[Dict[str, Any], List[Any], Tensor],
+        batch: Any,
+        batch_idx: int,
     ):
         """
         Adds training completion percentage to the progress bar
