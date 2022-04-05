@@ -419,8 +419,8 @@ class OptimizationProgressCallback(TimeMonitorCallback):
         self.total_steps += self.loading_stage_steps + self.initialization_stage_steps
 
         # set loading_stage_steps from the start as the model is already loaded at this point
-        self.current_step = self.loading_stage_steps
-        self.update_progress_callback(self.get_progress())
+        # self.current_step = self.loading_stage_steps
+        # self.update_progress_callback(self.get_progress())
 
     def on_train_batch_end(self, batch, logs=None):
         super().on_train_batch_end(batch, logs)
