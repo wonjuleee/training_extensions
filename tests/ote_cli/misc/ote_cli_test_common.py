@@ -37,9 +37,9 @@ default_train_args_paths = {
 }
 
 default_classification_args_paths = {
-    '--train-ann-file': '',
+    '--train-ann-files': '',
     '--train-data-roots': 'data/classification/train',
-    '--val-ann-file': '',
+    '--val-ann-files': '',
     '--val-data-roots': 'data/classification/val',
     '--test-ann-files': '',
     '--test-data-roots': 'data/classification/val',
