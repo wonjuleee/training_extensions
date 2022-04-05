@@ -25,6 +25,7 @@ from ote_cli.utils.tests import (
 
 from ote_cli_test_common import (
     default_train_args_paths,
+    default_classification_args_paths,
     wrong_paths,
     ote_common,
     logger,
@@ -823,7 +824,7 @@ class TestOptimizeClassificationTemplateArguments:
             "2"
         ]
         command_args = optimize_args(
-            template, default_train_args_paths, ote_dir, root, additional=params
+            template, default_classification_args_paths, ote_dir, root, additional=params
         )
         ret = ote_common(template, root, "optimize", command_args)
         assert ret["exit_code"] == 0, "Exit code must be equal 0"
@@ -844,7 +845,7 @@ class TestOptimizeClassificationTemplateArguments:
                 value
             ]
             command_args = optimize_args(
-                template, default_train_args_paths, ote_dir, root, additional=params
+                template, default_classification_args_paths, ote_dir, root, additional=params
             )
             ret = ote_common(template, root, "train", command_args)
             assert ret["exit_code"] != 0, "Exit code must not be equal 0"
@@ -866,7 +867,7 @@ class TestOptimizeClassificationTemplateArguments:
                 value
             ]
             command_args = optimize_args(
-                template, default_train_args_paths, ote_dir, root, additional=params
+                template, default_classification_args_paths, ote_dir, root, additional=params
             )
             ret = ote_common(template, root, "train", command_args)
             assert ret["exit_code"] != 0, "Exit code must not be equal 0"
@@ -886,7 +887,7 @@ class TestOptimizeClassificationTemplateArguments:
             "0.01"
         ]
         command_args = optimize_args(
-            template, default_train_args_paths, ote_dir, root, additional=params
+            template, default_classification_args_paths, ote_dir, root, additional=params
         )
         ret = ote_common(template, root, "optimize", command_args)
         assert ret["exit_code"] == 0, "Exit code must be equal 0"
@@ -905,7 +906,7 @@ class TestOptimizeClassificationTemplateArguments:
             "NotFloat"
         ]
         command_args = optimize_args(
-            template, default_train_args_paths, ote_dir, root, additional=params
+            template, default_classification_args_paths, ote_dir, root, additional=params
         )
         ret = ote_common(template, root, "train", command_args)
         assert ret["exit_code"] != 0, "Exit code must not be equal 0"
@@ -927,7 +928,7 @@ class TestOptimizeClassificationTemplateArguments:
                 value
             ]
             command_args = optimize_args(
-                template, default_train_args_paths, ote_dir, root, additional=params
+                template, default_classification_args_paths, ote_dir, root, additional=params
             )
             ret = ote_common(template, root, "train", command_args)
             assert ret["exit_code"] != 0, "Exit code must not be equal 0"
@@ -947,7 +948,7 @@ class TestOptimizeClassificationTemplateArguments:
             "2"
         ]
         command_args = optimize_args(
-            template, default_train_args_paths, ote_dir, root, additional=params
+            template, default_classification_args_paths, ote_dir, root, additional=params
         )
         ret = ote_common(template, root, "train", command_args)
         assert ret["exit_code"] == 0, "Exit code must be equal 0"
@@ -978,7 +979,7 @@ class TestOptimizeClassificationTemplateArguments:
                 value
             ]
             command_args = optimize_args(
-                template, default_train_args_paths, ote_dir, root, additional=params
+                template, default_classification_args_paths, ote_dir, root, additional=params
             )
             ret = ote_common(template, root, "train", command_args)
             assert ret["exit_code"] != 0, "Exit code must not be equal 0"
@@ -998,7 +999,7 @@ class TestOptimizeClassificationTemplateArguments:
             "False"
         ]
         command_args = optimize_args(
-            template, default_train_args_paths, ote_dir, root, additional=params
+            template, default_classification_args_paths, ote_dir, root, additional=params
         )
         ret = ote_common(template, root, "optimize", command_args)
         assert ret["exit_code"] == 0, "Exit code must be equal 0"
@@ -1017,7 +1018,7 @@ class TestOptimizeClassificationTemplateArguments:
             "NotBoolean"
         ]
         command_args = optimize_args(
-            template, default_train_args_paths, ote_dir, root, additional=params
+            template, default_classification_args_paths, ote_dir, root, additional=params
         )
         ret = ote_common(template, root, "train", command_args)
         assert ret["exit_code"] != 0, "Exit code must not be equal 0"
@@ -1037,7 +1038,7 @@ class TestOptimizeClassificationTemplateArguments:
             "False"
         ]
         command_args = optimize_args(
-            template, default_train_args_paths, ote_dir, root, additional=params
+            template, default_classification_args_paths, ote_dir, root, additional=params
         )
         ret = ote_common(template, root, "optimize", command_args)
         assert ret["exit_code"] == 0, "Exit code must be equal 0"
@@ -1056,7 +1057,7 @@ class TestOptimizeClassificationTemplateArguments:
             "NotBoolean"
         ]
         command_args = optimize_args(
-            template, default_train_args_paths, ote_dir, root, additional=params
+            template, default_classification_args_paths, ote_dir, root, additional=params
         )
         ret = ote_common(template, root, "train", command_args)
         assert ret["exit_code"] != 0, "Exit code must not be equal 0"

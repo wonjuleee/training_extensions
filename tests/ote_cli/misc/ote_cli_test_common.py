@@ -36,6 +36,16 @@ default_train_args_paths = {
     "--input": "data/airport/train",
 }
 
+default_classification_args_paths = {
+    '--train-ann-file': '',
+    '--train-data-roots': 'data/classification/train',
+    '--val-ann-file': '',
+    '--val-data-roots': 'data/classification/val',
+    '--test-ann-files': '',
+    '--test-data-roots': 'data/classification/val',
+    '--input': 'data/classification/val/0'
+}
+
 wrong_paths = {
     "empty": "",
     "not_printable": "\x11",
