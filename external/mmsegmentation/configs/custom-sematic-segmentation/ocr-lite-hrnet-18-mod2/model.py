@@ -187,6 +187,7 @@ runner = dict(
     max_epochs=600
 )
 checkpoint_config = dict(
+    type='CustomCheckpointHook',
     by_epoch=True,
     interval=1
 )
