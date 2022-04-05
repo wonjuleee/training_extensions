@@ -39,7 +39,7 @@ from detection_tasks.apis.detection.config_utils import cluster_anchors, prepare
 from detection_tasks.apis.detection.inference_task import OTEDetectionInferenceTask
 from detection_tasks.apis.detection.ote_utils import TrainingProgressCallback
 from detection_tasks.extension.utils.hooks import OTELoggerHook
-from mmdet.datasets import build_dataset
+from ote.datasets import build_dataset
 from mmdet.utils.logger import get_root_logger
 
 logger = get_root_logger()
