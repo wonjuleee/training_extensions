@@ -145,7 +145,7 @@ class OptimizationProgressCallback(TrainingProgressCallback):
         self.initialization_stage_progress_percentage = initialization_stage_progress_percentage
 
         # set loading_stage_progress_percentage from the start as the model is already loaded at this point
-        self.update_progress_callback(loading_stage_progress_percentage)
+        # self.update_progress_callback(loading_stage_progress_percentage)
 
     def on_train_begin(self, logs=None):
         super().on_train_begin(logs)
