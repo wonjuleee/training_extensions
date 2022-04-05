@@ -49,12 +49,12 @@ from typing import Any, Dict, List, Optional
 
 import cv2
 import pandas as pd
+from anomalib.data.mvtec import make_mvtec_dataset
 from ote_sdk.utils.argument_checks import (
     DirectoryPathCheck,
     ImageFilePathCheck,
     check_input_parameters_type,
 )
-from anomalib.data.mvtec import make_mvtec_dataset
 
 
 @check_input_parameters_type({"mask_path": ImageFilePathCheck})
@@ -94,7 +94,7 @@ def create_bboxes_from_mask(mask_path: str) -> List[List[float]]:
 
 
 @check_input_parameters_type({"mask_path": ImageFilePathCheck})
-def create_polygons_from_mask(mask_path: str) -> List[List[float]]:
+def create_polygons_from_mask(mask_path: str) -> List[List[List[float]]]:
     """Create polygons from binary mask.
 
     Args:
@@ -106,8 +106,8 @@ def create_polygons_from_mask(mask_path: str) -> List[List[float]]:
     mask = cv2.imread(mask_path, cv2.IMREAD_GRAYSCALE)
     height, width = mask.shape
 
-    polygons = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)[0][0]
-    polygons = [[x / width, y / height] for polygon in polygons for (x, y) in polygon]
+    polygons = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)[0]
+    polygons = [[[point[0][0] / width, point[0][1] / height] for point in polygon] for polygon in polygons]
 
     return polygons
 
