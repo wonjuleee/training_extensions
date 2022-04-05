@@ -845,7 +845,7 @@ class TestTrainClassificationTemplateArguments:
         ids=params_ids_for_be["CLASSIFICATION"],
     )
     def test_ote_train_clf_lp_batch_size_oob(self, template, create_venv_fx):
-        values = ["1", "513"]
+        values = ["0", "513"]
         for value in values:
             params = [
                 "params",
