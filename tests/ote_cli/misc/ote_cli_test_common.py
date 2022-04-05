@@ -44,6 +44,14 @@ wrong_paths = {
 
 logger = logging.getLogger(__name__)
 
+errors_dict = {
+    "int_value": "invalid int value",
+    "float_value": "invalid float value",
+    "boolean_value": "Boolean value expected",
+    "oob": "is out of bounds",
+    "path": "Path is not valid"
+}
+
 
 def parser_templates():
     params_values = []

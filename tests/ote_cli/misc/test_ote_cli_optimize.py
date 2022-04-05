@@ -34,6 +34,7 @@ from ote_cli_test_common import (
     ote_dir,
     get_exported_artifact,
     optimize_args,
+    errors_dict
 )
 
 params_values, params_ids, params_values_for_be, params_ids_for_be = parser_templates()
@@ -772,3 +773,432 @@ class TestOptimizeDetectionTemplateArguments:
         )
         ret = ote_common(template, root, "optimize", command_args)
         assert ret["exit_code"] == 0, "Exit code must be equal 0"
+
+
+class TestOptimizeClassificationTemplateArguments:
+    @pytest.fixture()
+    @e2e_pytest_component
+    @pytest.mark.parametrize(
+        "template",
+        params_values_for_be["CLASSIFICATION"],
+        ids=params_ids_for_be["CLASSIFICATION"],
+    )
+    def create_venv_fx(self, template):
+        work_dir, template_work_dir, algo_backend_dir = get_some_vars(template, root)
+        create_venv(algo_backend_dir, work_dir)
+
+    @pytest.fixture()
+    @e2e_pytest_component
+    @pytest.mark.parametrize(
+        "template",
+        params_values_for_be["CLASSIFICATION"],
+        ids=params_ids_for_be["CLASSIFICATION"],
+    )
+    def get_pretrained_artifacts_fx(self, template, create_venv_fx):
+        get_pretrained_artifacts(template, root, ote_dir)
+
+    @pytest.fixture()
+    @e2e_pytest_component
+    @pytest.mark.parametrize(
+        "template",
+        params_values_for_be["CLASSIFICATION"],
+        ids=params_ids_for_be["CLASSIFICATION"],
+    )
+    def get_exported_artifacts_fx(
+            self, template, create_venv_fx, get_pretrained_artifacts_fx
+    ):
+        get_exported_artifact(template, root)
+
+    @pytest.fixture()
+    @e2e_pytest_component
+    @pytest.mark.parametrize(
+        "template",
+        params_values_for_be["CLASSIFICATION"],
+        ids=params_ids_for_be["CLASSIFICATION"],
+    )
+    def test_ote_optimize_clf_lp_batch_size(self, template, create_venv_fx, get_exported_artifacts_fx):
+        params = [
+            "params",
+            "--learning_parameters.batch_size",
+            "2"
+        ]
+        command_args = optimize_args(
+            template, default_train_args_paths, ote_dir, root, additional=params
+        )
+        ret = ote_common(template, root, "optimize", command_args)
+        assert ret["exit_code"] == 0, "Exit code must be equal 0"
+
+    @pytest.fixture()
+    @e2e_pytest_component
+    @pytest.mark.parametrize(
+        "template",
+        params_values_for_be["CLASSIFICATION"],
+        ids=params_ids_for_be["CLASSIFICATION"],
+    )
+    def test_ote_optimize_clf_lp_batch_size_type(self, template, create_venv_fx):
+        values = ["1.0", "String"]
+        for value in values:
+            params = [
+                "params",
+                "--learning_parameters.batch_size",
+                value
+            ]
+            command_args = optimize_args(
+                template, default_train_args_paths, ote_dir, root, additional=params
+            )
+            ret = ote_common(template, root, "train", command_args)
+            assert ret["exit_code"] != 0, "Exit code must not be equal 0"
+            assert errors_dict["int_value"] in ret["stderr"], f"Different error message {ret['stderr']}"
+
+    @pytest.fixture()
+    @e2e_pytest_component
+    @pytest.mark.parametrize(
+        "template",
+        params_values_for_be["CLASSIFICATION"],
+        ids=params_ids_for_be["CLASSIFICATION"],
+    )
+    def test_ote_optimize_clf_lp_batch_size_oob(self, template, create_venv_fx):
+        values = ["1", "513"]
+        for value in values:
+            params = [
+                "params",
+                "--learning_parameters.batch_size",
+                value
+            ]
+            command_args = optimize_args(
+                template, default_train_args_paths, ote_dir, root, additional=params
+            )
+            ret = ote_common(template, root, "train", command_args)
+            assert ret["exit_code"] != 0, "Exit code must not be equal 0"
+            assert errors_dict["oob"] in ret["stderr"], f"Different error message {ret['stderr']}"
+
+    @pytest.fixture()
+    @e2e_pytest_component
+    @pytest.mark.parametrize(
+        "template",
+        params_values_for_be["CLASSIFICATION"],
+        ids=params_ids_for_be["CLASSIFICATION"],
+    )
+    def test_ote_optimize_clf_lp_lr(self, template, create_venv_fx, get_exported_artifacts_fx):
+        params = [
+            "params",
+            "--learning_parameters.learning_rate ",
+            "0.01"
+        ]
+        command_args = optimize_args(
+            template, default_train_args_paths, ote_dir, root, additional=params
+        )
+        ret = ote_common(template, root, "optimize", command_args)
+        assert ret["exit_code"] == 0, "Exit code must be equal 0"
+
+    @pytest.fixture()
+    @e2e_pytest_component
+    @pytest.mark.parametrize(
+        "template",
+        params_values_for_be["CLASSIFICATION"],
+        ids=params_ids_for_be["CLASSIFICATION"],
+    )
+    def test_ote_optimize_clf_lp_lr_type(self, template, create_venv_fx):
+        params = [
+            "params",
+            "--learning_parameters.learning_rate ",
+            "NotFloat"
+        ]
+        command_args = optimize_args(
+            template, default_train_args_paths, ote_dir, root, additional=params
+        )
+        ret = ote_common(template, root, "train", command_args)
+        assert ret["exit_code"] != 0, "Exit code must not be equal 0"
+        assert errors_dict["float_value"] in ret["stderr"], f"Different error message {ret['stderr']}"
+
+    @pytest.fixture()
+    @e2e_pytest_component
+    @pytest.mark.parametrize(
+        "template",
+        params_values_for_be["CLASSIFICATION"],
+        ids=params_ids_for_be["CLASSIFICATION"],
+    )
+    def test_ote_optimize_clf_lp_lr_oob(self, template, create_venv_fx):
+        values = ["0", "0.11"]
+        for value in values:
+            params = [
+                "params",
+                "--learning_parameters.learning_rate",
+                value
+            ]
+            command_args = optimize_args(
+                template, default_train_args_paths, ote_dir, root, additional=params
+            )
+            ret = ote_common(template, root, "train", command_args)
+            assert ret["exit_code"] != 0, "Exit code must not be equal 0"
+            assert errors_dict["oob"] in ret["stderr"], f"Different error message {ret['stderr']}"
+
+    @pytest.fixture()
+    @e2e_pytest_component
+    @pytest.mark.parametrize(
+        "template",
+        params_values_for_be["CLASSIFICATION"],
+        ids=params_ids_for_be["CLASSIFICATION"],
+    )
+    def test_ote_optimize_clf_lp_mne(self, template, create_venv_fx, get_exported_artifacts_fx):
+        params = [
+            "params",
+            "--learning_parameters.max_num_epochs",
+            "2"
+        ]
+        command_args = optimize_args(
+            template, default_train_args_paths, ote_dir, root, additional=params
+        )
+        ret = ote_common(template, root, "train", command_args)
+        assert ret["exit_code"] == 0, "Exit code must be equal 0"
+
+    @pytest.fixture()
+    @e2e_pytest_component
+    @pytest.mark.parametrize(
+        "template",
+        params_values_for_be["CLASSIFICATION"],
+        ids=params_ids_for_be["CLASSIFICATION"],
+    )
+    def test_ote_optimize_clf_lp_mne_type(self, template, create_venv_fx):
+        pass
+
+    @pytest.fixture()
+    @e2e_pytest_component
+    @pytest.mark.parametrize(
+        "template",
+        params_values_for_be["CLASSIFICATION"],
+        ids=params_ids_for_be["CLASSIFICATION"],
+    )
+    def test_ote_optimize_clf_lp_mne_oob(self, template, create_venv_fx):
+        values = ["0", "1001"]
+        for value in values:
+            params = [
+                "params",
+                "--learning_parameters.max_num_epochs",
+                value
+            ]
+            command_args = optimize_args(
+                template, default_train_args_paths, ote_dir, root, additional=params
+            )
+            ret = ote_common(template, root, "train", command_args)
+            assert ret["exit_code"] != 0, "Exit code must not be equal 0"
+            assert errors_dict["oob"] in ret["stderr"], f"Different error message {ret['stderr']}"
+
+    @pytest.fixture()
+    @e2e_pytest_component
+    @pytest.mark.parametrize(
+        "template",
+        params_values_for_be["CLASSIFICATION"],
+        ids=params_ids_for_be["CLASSIFICATION"],
+    )
+    def test_ote_optimize_clf_lp_es(self, template, create_venv_fx, get_exported_artifacts_fx):
+        params = [
+            "params",
+            "--learning_parameters.enable_early_stopping",
+            "False"
+        ]
+        command_args = optimize_args(
+            template, default_train_args_paths, ote_dir, root, additional=params
+        )
+        ret = ote_common(template, root, "optimize", command_args)
+        assert ret["exit_code"] == 0, "Exit code must be equal 0"
+
+    @pytest.fixture()
+    @e2e_pytest_component
+    @pytest.mark.parametrize(
+        "template",
+        params_values_for_be["CLASSIFICATION"],
+        ids=params_ids_for_be["CLASSIFICATION"],
+    )
+    def test_ote_optimize_clf_lp_es_type(self, template, create_venv_fx):
+        params = [
+            "params",
+            "--learning_parameters.enable_lr_finder",
+            "NotBoolean"
+        ]
+        command_args = optimize_args(
+            template, default_train_args_paths, ote_dir, root, additional=params
+        )
+        ret = ote_common(template, root, "train", command_args)
+        assert ret["exit_code"] != 0, "Exit code must not be equal 0"
+        assert errors_dict["boolean_value"] in ret["stderr"], f"Different error message {ret['stderr']}"
+
+    @pytest.fixture()
+    @e2e_pytest_component
+    @pytest.mark.parametrize(
+        "template",
+        params_values_for_be["CLASSIFICATION"],
+        ids=params_ids_for_be["CLASSIFICATION"],
+    )
+    def test_ote_optimize_clf_lp_elf(self, template, create_venv_fx, get_exported_artifacts_fx):
+        params = [
+            "params",
+            "--learning_parameters.enable_lr_finder",
+            "False"
+        ]
+        command_args = optimize_args(
+            template, default_train_args_paths, ote_dir, root, additional=params
+        )
+        ret = ote_common(template, root, "optimize", command_args)
+        assert ret["exit_code"] == 0, "Exit code must be equal 0"
+
+    @pytest.fixture()
+    @e2e_pytest_component
+    @pytest.mark.parametrize(
+        "template",
+        params_values_for_be["CLASSIFICATION"],
+        ids=params_ids_for_be["CLASSIFICATION"],
+    )
+    def test_ote_optimize_clf_lp_elf_type(self, template, create_venv_fx):
+        params = [
+            "params",
+            "--learning_parameters.enable_lr_finder",
+            "NotBoolean"
+        ]
+        command_args = optimize_args(
+            template, default_train_args_paths, ote_dir, root, additional=params
+        )
+        ret = ote_common(template, root, "train", command_args)
+        assert ret["exit_code"] != 0, "Exit code must not be equal 0"
+        assert errors_dict["boolean_value"] in ret["stderr"], f"Different error message {ret['stderr']}"
+
+    @pytest.fixture()
+    @e2e_pytest_component
+    @pytest.mark.parametrize(
+        "template",
+        params_values_for_be["CLASSIFICATION"],
+        ids=params_ids_for_be["CLASSIFICATION"],
+    )
+    def test_ote_optimize_clf_nncfo_eq(self, template, create_venv_fx, get_exported_artifacts_fx):
+        params = [
+            "params",
+            "--nncf_optimization.enable_quantization",
+            "False"
+        ]
+        command_args = optimize_args(
+            template, default_train_args_paths, ote_dir, root, additional=params
+        )
+        ret = ote_common(template, root, "train", command_args)
+        assert ret["exit_code"] == 0, "Exit code must be equal 0"
+
+    @pytest.fixture()
+    @e2e_pytest_component
+    @pytest.mark.parametrize(
+        "template",
+        params_values_for_be["CLASSIFICATION"],
+        ids=params_ids_for_be["CLASSIFICATION"],
+    )
+    def test_ote_optimize_clf_nncfo_eq_type(self, template, create_venv_fx):
+        params = [
+            "params",
+            "--learning_parameters.max_num_epochs",
+            "NotBoolean"
+        ]
+        command_args = optimize_args(
+            template, default_train_args_paths, ote_dir, root, additional=params
+        )
+        ret = ote_common(template, root, "train", command_args)
+        assert ret["exit_code"] != 0, "Exit code must not be equal 0"
+        assert errors_dict["boolean_value"] in ret["stderr"], f"Different error message {ret['stderr']}"
+
+    @pytest.fixture()
+    @e2e_pytest_component
+    @pytest.mark.parametrize(
+        "template",
+        params_values_for_be["CLASSIFICATION"],
+        ids=params_ids_for_be["CLASSIFICATION"],
+    )
+    def test_ote_optimize_clf_nncfo_ep(self, template, create_venv_fx, get_exported_artifacts_fx):
+        params = [
+            "params",
+            "--nncf_optimization.enable_pruning",
+            "False"
+        ]
+        command_args = optimize_args(
+            template, default_train_args_paths, ote_dir, root, additional=params
+        )
+        ret = ote_common(template, root, "train", command_args)
+        assert ret["exit_code"] == 0, "Exit code must be equal 0"
+
+    @pytest.fixture()
+    @e2e_pytest_component
+    @pytest.mark.parametrize(
+        "template",
+        params_values_for_be["CLASSIFICATION"],
+        ids=params_ids_for_be["CLASSIFICATION"],
+    )
+    def test_ote_optimize_clf_nncfo_eq_type(self, template, create_venv_fx):
+        params = [
+            "params",
+            "--learning_parameters.max_num_epochs",
+            "NotBoolean"
+        ]
+        command_args = optimize_args(
+            template, default_train_args_paths, ote_dir, root, additional=params
+        )
+        ret = ote_common(template, root, "train", command_args)
+        assert ret["exit_code"] != 0, "Exit code must not be equal 0"
+        assert errors_dict["boolean_value"] in ret["stderr"], f"Different error message {ret['stderr']}"
+
+    @pytest.fixture()
+    @e2e_pytest_component
+    @pytest.mark.parametrize(
+        "template",
+        params_values_for_be["CLASSIFICATION"],
+        ids=params_ids_for_be["CLASSIFICATION"],
+    )
+    def test_ote_optimize_clf_nncfo_mad(self, template, create_venv_fx, get_exported_artifacts_fx):
+        params = [
+            "params",
+            "--learning_parameters.maximal_accuracy_degradation",
+            "2"
+        ]
+        command_args = optimize_args(
+            template, default_train_args_paths, ote_dir, root, additional=params
+        )
+        # TODO: (fkutsepx) To write a hack what only check arguments correctness and provide a hook
+        # TODO: (fkutsepx) that can be caught so it is not be need to waite entire tool execution
+        ret = ote_common(template, root, "train", command_args)
+        assert ret["exit_code"] == 0, "Exit code must be equal 0"
+
+    @pytest.fixture()
+    @e2e_pytest_component
+    @pytest.mark.parametrize(
+        "template",
+        params_values_for_be["CLASSIFICATION"],
+        ids=params_ids_for_be["CLASSIFICATION"],
+    )
+    def test_ote_optimize_clf_nncfo_mad_type(self, template, create_venv_fx):
+        params = [
+            "params",
+            "--learning_parameters.maximal_accuracy_degradation",
+            "NotInteger"
+        ]
+        command_args = optimize_args(
+            template, default_train_args_paths, ote_dir, root, additional=params
+        )
+        ret = ote_common(template, root, "train", command_args)
+        assert ret["exit_code"] != 0, "Exit code must not be equal 0"
+        assert errors_dict["int_value"] in ret["stderr"], f"Different error message {ret['stderr']}"
+
+    @pytest.fixture()
+    @e2e_pytest_component
+    @pytest.mark.parametrize(
+        "template",
+        params_values_for_be["CLASSIFICATION"],
+        ids=params_ids_for_be["CLASSIFICATION"],
+    )
+    def test_ote_optimize_clf_nncfo_mad_oob(self, template, create_venv_fx):
+        values = ["-1", "101"]
+        for value in values:
+            params = [
+                "params",
+                "--learning_parameters.maximal_accuracy_degradation",
+                value
+            ]
+            command_args = optimize_args(
+                template, default_train_args_paths, ote_dir, root, additional=params
+            )
+            ret = ote_common(template, root, "train", command_args)
+            assert ret["exit_code"] != 0, "Exit code must not be equal 0"
+            assert errors_dict["oob"] in ret["stderr"], f"Different error message {ret['stderr']}"
