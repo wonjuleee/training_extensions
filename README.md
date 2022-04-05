@@ -55,7 +55,6 @@ The following tests fail:
     - ote/tests/test_models.py::PublicModelsTestCase::test_openvino_ssd300_coco
     - ote/tests/test_models.py::PublicModelsTestCase::test_pytorch_retinanet_effd0_bifpn_1x_coco
     - ote/tests/test_models.py::PublicModelsTestCase::test_pytorch_ssd300_coco
-    - ote/tests/test_models.py::PublicModelsTestCase::test_pytorch_yolox_tiny_8x8_300e_coco
 - training_extensions/
     - tests/ote_cli/external/mmdetection/test_ote_cli_tools_detection.py::TestToolsDetection::test_ote_train[Custom_Object_Detection_YOLOX]
     - tests/ote_cli/external/mmdetection/test_ote_cli_tools_detection.py::TestToolsDetection::test_ote_train[Custom_Object_Detection_Gen3_SSD]
