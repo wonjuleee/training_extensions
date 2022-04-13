@@ -9,6 +9,9 @@ from typing import Dict, Any
 from ote_sdk.entities.dataset_item import DatasetItemEntity
 from ote_sdk.entities.datasets import DatasetEntity
 from ote_sdk.entities.image import Image
+import argparse
+from ote_sdk.entities.model import ModelEntity
+from ote_sdk.entities.resultset import ResultSetEntity
 
 from mmdet.utils.logger import get_root_logger
 
@@ -115,11 +118,11 @@ def load_dataset(dump: Dict[str, Any]):
         purpose=dump['purpose'])
 
 
-if __name__ == '__main__':
-    import argparse
-    from ote_sdk.entities.model import ModelEntity, ModelStatus
-    from ote_sdk.entities.resultset import ResultSetEntity
+def analyse_dataset(dataset: DatasetEntity):
+  pass
 
+
+if __name__ == '__main__':
 
     def parse_args():
         parser = argparse.ArgumentParser()
@@ -147,32 +150,17 @@ if __name__ == '__main__':
                 logger.setLevel(logging.INFO)
 
                 task = dump['task']
+                entrypoint = dump['entrypoint']
+
+                analyse_dataset(dump['arguments']['dataset'])
+
                 # Disable debug dump when replay another debug dump
                 task._task_environment.get_hyper_parameters().debug_parameters.enable_debug_dump = False
                 method_args = {}
-
-                entrypoint = dump['entrypoint']
                 print('*' * 80)
 
                 print(f'{type(task)=}, {entrypoint=}')
                 print('=' * 80)
-
-                while True:
-                    action = input('[r]eplay, [s]kip or [q]uit : [r] ')
-                    action = action.lower()
-                    if action == '':
-                        action = 'r'
-                    if action not in {'r', 's', 'q'}:
-                        continue
-                    else:
-                        break
-
-                if action == 's':
-                    print('skipping the step replay')
-                    continue
-                if action == 'q':
-                    print('quiting dump replay session')
-                    exit(0)
 
                 print('replaying the step')
 
@@ -181,8 +169,7 @@ if __name__ == '__main__':
                     train_dataset = method_args['dataset']
                     method_args['output_model'] = ModelEntity(
                         method_args['dataset'],
-                        task._task_environment,
-                        model_status=ModelStatus.NOT_READY)
+                        task._task_environment)
                     output_model = method_args['output_model']
                     method_args['train_parameters'] = None
                 elif entrypoint == 'infer':
@@ -191,15 +178,13 @@ if __name__ == '__main__':
                 elif entrypoint == 'export':
                     method_args['output_model'] = ModelEntity(
                         train_dataset,
-                        task._task_environment,
-                        model_status=ModelStatus.NOT_READY)
+                        task._task_environment)
                     output_model = method_args['output_model']
                     method_args['export_type'] = dump['arguments']['export_type']
                 elif entrypoint == 'evaluate':
                     output_model = ModelEntity(
                         DatasetEntity(),
-                        task._task_environment,
-                        model_status=ModelStatus.SUCCESS)
+                        task._task_environment)
                     output_model.configuration.label_schema = task._task_environment.label_schema
                     method_args['output_result_set'] = ResultSetEntity(
                         model=output_model,
