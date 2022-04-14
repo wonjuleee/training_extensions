@@ -542,9 +542,9 @@ class API(unittest.TestCase):
             osp.join('configs', 'custom-object-detection', 'cspdarknet_YOLOX'))
 
     @e2e_pytest_api
-    @pytest.mark.xfail(reason='CVS-83115')
+    # @pytest.mark.xfail(reason='CVS-83115')
     def test_training_maskrcnn_resnet50(self):
-        self.end_to_end(osp.join('configs',
+        self.end_to_end(osp.join('/home/yuchunli/git/training_extensions/external/mmdetection/configs',
                         'custom-counting-instance-seg', 'resnet50_maskrcnn'),
                         task_type=TaskType.INSTANCE_SEGMENTATION)
 
