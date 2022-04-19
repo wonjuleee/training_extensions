@@ -154,6 +154,13 @@ class OTEProgressHook(Hook):
         self.time_monitor.on_epoch_begin(runner.epoch)
 
     def after_epoch(self, runner):
+        # print(f"------------after_epoch = {runner.log_buffer.val_history}")
+        for key, value in runner.log_buffer.val_history.items():
+            if key == 'loss':
+                last_loss = value[-1]
+                if isnan(last_loss):
+                    last_loss = 1000.0
+                runner.log_buffer.output[key] = last_loss
         self.time_monitor.on_epoch_end(runner.epoch, runner.log_buffer.output)
 
     def before_iter(self, runner):
@@ -172,6 +179,7 @@ class OTEProgressHook(Hook):
 
     def after_val_iter(self, runner):
         self.time_monitor.on_test_batch_end(1)
+        print(f"------------after_val_iter = {runner}")
 
     def after_run(self, runner):
         self.time_monitor.on_train_end(1)

@@ -298,6 +298,8 @@ class HpoManager:
             non_pure_train_ratio=val_dataset_size
             / (train_dataset_size + val_dataset_size),
             batch_size_name="learning_parameters.batch_size",
+            metric=self.metric,
+            mode=hpopt_cfg.get("mode", "max")
         )
 
         if self.algo == "smbo":
