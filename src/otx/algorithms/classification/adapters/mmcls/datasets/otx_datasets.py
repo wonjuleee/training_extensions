@@ -61,10 +61,10 @@ class OTXClsDataset(BaseDataset):
     def load_annotations(self):
         """Load annotations."""
         include_empty = self.empty_label in self.labels
-        for i, _ in enumerate(self.otx_dataset):
+        for item in self.otx_dataset:
             class_indices = []
-            item_labels = self.otx_dataset[i].get_roi_labels(self.labels, include_empty=include_empty)
-            ignored_labels = self.otx_dataset[i].ignored_labels
+            item_labels = item.get_roi_labels(self.labels, include_empty=include_empty)
+            ignored_labels = item.ignored_labels
             if item_labels:
                 for otx_lbl in item_labels:
                     if otx_lbl not in ignored_labels:

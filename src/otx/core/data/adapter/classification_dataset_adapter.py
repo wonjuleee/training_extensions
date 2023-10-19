@@ -34,24 +34,20 @@ class ClassificationDatasetAdapter(BaseDatasetAdapter):
         # Set the DatasetItemEntityWithID
         dataset_items: List[DatasetItemEntityWithID] = []
         for subset, subset_data in self.dataset.items():
-            for _, datumaro_items in subset_data.subsets().items():
-                for datumaro_item in datumaro_items:
-                    image = self.datum_media_2_otx_media(datumaro_item.media)
-                    assert isinstance(image, Image)
-                    if not fake_ann:
-                        datumaro_labels = []
-                        for ann in datumaro_item.annotations:
-                            if ann.type == DatumAnnotationType.label:
-                                datumaro_labels.append(ann.label)
-                    else:
-                        datumaro_labels = [0]  # fake label
+            for datumaro_item in subset_data:
+                image = self.datum_media_2_otx_media(datumaro_item.media)
+                assert isinstance(image, Image)
+                if not fake_ann:
+                    datumaro_labels = [ann.label for ann in datumaro_item.annotations if ann.type == DatumAnnotationType.label]
+                else:
+                    datumaro_labels = [0]  # fake label
 
-                    shapes = self._get_cls_shapes(datumaro_labels)
-                    dataset_item = DatasetItemEntityWithID(
-                        image, self._get_ann_scene_entity(shapes), subset=subset, id_=datumaro_item.id
-                    )
+                shapes = self._get_cls_shapes(datumaro_labels)
+                dataset_item = DatasetItemEntityWithID(
+                    image, self._get_ann_scene_entity(shapes), subset=subset, id_=datumaro_item.id
+                )
 
-                    dataset_items.append(dataset_item)
+                dataset_items.append(dataset_item)
         return dataset_items
 
     def get_otx_dataset(self) -> DatasetEntity:
