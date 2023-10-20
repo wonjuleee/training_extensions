@@ -323,7 +323,7 @@ class MMClassificationTask(OTXClassificationTask):
     # pylint: disable=too-many-branches, too-many-statements
     def _train_model(
         self,
-        dataset: DatasetEntity,
+        dataset,
     ):
         """Train function in MMClassificationTask."""
         self._data_cfg = ConfigDict(data=ConfigDict())
@@ -332,7 +332,8 @@ class MMClassificationTask(OTXClassificationTask):
             ["train", "val", "unlabeled"],
             [Subset.TRAINING, Subset.VALIDATION, Subset.UNLABELED],
         ):
-            subset = get_dataset(dataset, subset)
+            # subset = get_dataset(dataset, subset)
+            subset = dataset.get(subset, None)
             if subset and self._data_cfg is not None:
                 self._data_cfg.data[cfg_key] = ConfigDict(
                     otx_dataset=subset,

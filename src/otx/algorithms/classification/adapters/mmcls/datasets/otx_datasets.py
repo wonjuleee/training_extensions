@@ -46,12 +46,13 @@ class OTXClsDataset(BaseDataset):
         self.gt_labels = []  # type: List
         self.num_classes = len(self.CLASSES)
 
-        test_mode = kwargs.get("test_mode", False)
-        if test_mode is False:
-            new_classes = kwargs.pop("new_classes", [])
-            self.img_indices = self.get_indices(new_classes)
+        # test_mode = kwargs.get("test_mode", False)
+        # if test_mode is False:
+        #     new_classes = kwargs.pop("new_classes", [])
+        #     self.img_indices = self.get_indices(new_classes)
 
         self.pipeline = Compose([build_from_cfg(p, PIPELINES) for p in pipeline])
+        self._ids = [item.id for item in otx_dataset]
         self.load_annotations()
 
     def get_indices(self, *args):  # pylint: disable=unused-argument
@@ -78,20 +79,23 @@ class OTXClsDataset(BaseDataset):
 
     def __getitem__(self, index: int):
         """Get item from dataset."""
-        dataset = self.otx_dataset
-        item = dataset[index]
-        ignored_labels = np.array([self.label_idx[lbs.id] for lbs in item.ignored_labels])
+        # dataset = self.otx_dataset
+        # item = dataset[index]
+        # gt_label = self.gt_labels[index]
+        # ignored_labels = np.array([self.label_idx[lbs.id] for lbs in item.ignored_labels])
 
-        height, width = item.height, item.width
+        # height, width = item.height, item.width
 
-        gt_label = self.gt_labels[index]
+        item = self.otx_dataset.get(id=self._ids[index])
+        gt_label = item.annotations[0]
+    
         data_info = dict(
             dataset_item=item,
-            width=width,
-            height=height,
+            # width=width,
+            # height=height,
             index=index,
             gt_label=gt_label,
-            ignored_labels=ignored_labels,
+            # ignored_labels=ignored_labels,
             entity_id=getattr(item, "id_", None),
             label_id=self._get_label_id(gt_label),
         )

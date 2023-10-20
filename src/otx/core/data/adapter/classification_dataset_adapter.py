@@ -17,6 +17,7 @@ from otx.api.entities.id import ID
 from otx.api.entities.image import Image
 from otx.api.entities.label import LabelEntity
 from otx.api.entities.label_schema import LabelGroup, LabelGroupType, LabelSchemaEntity
+from otx.api.entities.model_template import TaskType
 from otx.api.entities.scored_label import ScoredLabel
 from otx.api.entities.shapes.rectangle import Rectangle
 from otx.api.entities.subset import Subset
@@ -29,6 +30,19 @@ class ClassificationDatasetAdapter(BaseDatasetAdapter):
     It converts DatumaroDataset -> DatasetEntity
     for multi-class, multi-label, and hierarchical-label classification tasks
     """
+
+    def __init__(
+            self,
+            task_type: TaskType,
+            **kwargs,
+        ):
+        super().__init__(task_type, **kwargs)
+
+        # Prepare label information
+        label_information = self._prepare_label_information(self.dataset)
+        self.category_items = label_information["category_items"]
+        self.label_groups = label_information["label_groups"]
+        self.label_entities = label_information["label_entities"]
 
     def _get_dataset_items(self, fake_ann=False):
         # Set the DatasetItemEntityWithID
@@ -52,14 +66,9 @@ class ClassificationDatasetAdapter(BaseDatasetAdapter):
 
     def get_otx_dataset(self) -> DatasetEntity:
         """Convert DatumaroDataset to DatasetEntity for Classification."""
-        # Prepare label information
-        label_information = self._prepare_label_information(self.dataset)
-        self.category_items = label_information["category_items"]
-        self.label_groups = label_information["label_groups"]
-        self.label_entities = label_information["label_entities"]
-        dataset_items = self._get_dataset_items()
-        return DatasetEntity(items=dataset_items)
-
+        # return DatasetEntity(items=self._get_dataset_items())
+        return self.dataset
+    
     def _get_cls_shapes(self, datumaro_labels: List[int]) -> List[Annotation]:
         """Converts a list of datumaro labels to Annotation object."""
         otx_labels = []

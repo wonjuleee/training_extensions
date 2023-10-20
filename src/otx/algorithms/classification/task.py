@@ -182,7 +182,7 @@ class OTXClassificationTask(OTXTask, ABC):
 
     def train(
         self,
-        dataset: DatasetEntity,
+        dataset,
         output_model: ModelEntity,
         train_parameters: Optional[TrainParameters] = None,
         seed: Optional[int] = None,

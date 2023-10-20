@@ -274,7 +274,7 @@ def compute_robust_scale_statistics(values: np.array) -> Dict[str, float]:
     return stat
 
 
-def compute_robust_dataset_statistics(dataset: DatasetEntity, ann_stat=False, max_samples=1000) -> Dict[str, Any]:
+def compute_robust_dataset_statistics(dataset, ann_stat=False, max_samples=1000) -> Dict[str, Any]:
     """Computes robust statistics of image & annotation sizes.
 
     Args:
@@ -297,36 +297,37 @@ def compute_robust_dataset_statistics(dataset: DatasetEntity, ann_stat=False, ma
         return stat
 
     max_image_samples = min(max_samples, len(dataset))
-    image_indices = np.random.permutation(len(dataset))[:max_image_samples]
+    image_indices = [(item.id, item.subset) for item in dataset]
+    selected_indices = random.sample(image_indices, max_image_samples)
 
     image_sizes = []
-    for i in image_indices:
-        data = dataset[int(i)]
-        image_sizes.append(np.sqrt(data.width * data.height))
+    for id, subset in selected_indices:
+        data = dataset.get(id, subset)
+        image_sizes.append(np.sqrt(data.media.size[0] * data.media.size[1]))
     stat["image"] = compute_robust_scale_statistics(np.array(image_sizes))
 
     if ann_stat:
         stat["annotation"] = {}
         num_per_images: List[int] = []
         size_of_shapes: List[float] = []
-        for i in image_indices:
-            data = dataset[int(i)]
-            annotations = data.get_annotations()
+        for id, subset in selected_indices:
+            data = dataset.get(id, subset)
+            annotations = data.annotations
             num_per_images.append(len(annotations))
 
-            if len(size_of_shapes) >= max_samples:
-                continue
+            # if len(size_of_shapes) >= max_samples:
+            #     continue
 
-            image_area = data.width * data.height
+            # image_area = data.width * data.height
 
-            def scale_of(ann):
-                return np.sqrt(image_area * ann.shape.get_area())
+            # def scale_of(ann):
+            #     return np.sqrt(image_area * ann.shape.get_area())
 
-            size_of_shapes.extend(
-                filter(lambda x: x >= 1, map(scale_of, annotations))
-            )  # Filter out shapes smaller than 1 pixel as outlier
+            # size_of_shapes.extend(
+            #     filter(lambda x: x >= 1, map(scale_of, annotations))
+            # )  # Filter out shapes smaller than 1 pixel as outlier
 
         stat["annotation"]["num_per_image"] = compute_robust_statistics(np.array(num_per_images))
-        stat["annotation"]["size_of_shape"] = compute_robust_scale_statistics(np.array(size_of_shapes))
+        # stat["annotation"]["size_of_shape"] = compute_robust_scale_statistics(np.array(size_of_shapes))
 
     return stat
