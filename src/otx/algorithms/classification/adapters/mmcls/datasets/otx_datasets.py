@@ -44,6 +44,7 @@ class OTXClsDataset(BaseDataset):
 
         self.CLASSES = list(label.name for label in labels)
         self.gt_labels = []  # type: List
+        self.item_ids = []
         self.num_classes = len(self.CLASSES)
 
         # test_mode = kwargs.get("test_mode", False)
@@ -52,7 +53,6 @@ class OTXClsDataset(BaseDataset):
         #     self.img_indices = self.get_indices(new_classes)
 
         self.pipeline = Compose([build_from_cfg(p, PIPELINES) for p in pipeline])
-        self._ids = [item.id for item in otx_dataset]
         self.load_annotations()
 
     def get_indices(self, *args):  # pylint: disable=unused-argument
@@ -63,18 +63,16 @@ class OTXClsDataset(BaseDataset):
         """Load annotations."""
         include_empty = self.empty_label in self.labels
         for item in self.otx_dataset:
+            item_labels = [ann.label for ann in item.annotations] # item.get_roi_labels(self.labels, include_empty=include_empty)
+            ignored_labels = item.attributes.get("ignored_labels", []) # item.ignored_labels
             class_indices = []
-            item_labels = item.get_roi_labels(self.labels, include_empty=include_empty)
-            ignored_labels = item.ignored_labels
-            if item_labels:
-                for otx_lbl in item_labels:
-                    if otx_lbl not in ignored_labels:
-                        class_indices.append(self.label_names.index(otx_lbl.name))
-                    else:
-                        class_indices.append(-1)
-            else:  # this supposed to happen only on inference stage
-                class_indices.append(-1)
+            for label in item_labels:
+                if label in ignored_labels:
+                    class_indices.append(-1)
+                else:
+                    class_indices.append(label)
             self.gt_labels.append(class_indices)
+            self.item_ids.append(item.id)
         self.gt_labels = np.array(self.gt_labels)
 
     def __getitem__(self, index: int):
@@ -84,20 +82,17 @@ class OTXClsDataset(BaseDataset):
         # gt_label = self.gt_labels[index]
         # ignored_labels = np.array([self.label_idx[lbs.id] for lbs in item.ignored_labels])
 
-        # height, width = item.height, item.width
-
-        item = self.otx_dataset.get(id=self._ids[index])
-        gt_label = item.annotations[0]
+        item = self.otx_dataset.get(id=self.item_ids[index])
+        ignored_labels = item.attributes.get("ignored_labels", []) # item.ignored_labels
+        gt_label = self.gt_labels[index]
     
         data_info = dict(
             dataset_item=item,
-            # width=width,
-            # height=height,
             index=index,
             gt_label=gt_label,
-            # ignored_labels=ignored_labels,
-            entity_id=getattr(item, "id_", None),
-            label_id=self._get_label_id(gt_label),
+            ignored_labels=ignored_labels,
+            entity_id=None,
+            label_id=gt_label,
         )
 
         if self.pipeline is None:

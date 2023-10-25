@@ -170,20 +170,20 @@ def get_image(results: Dict[str, Any], cache_dir: str, to_float32=False) -> np.n
 
     subset = results["dataset_item"].subset
     media = results["dataset_item"].media
-    if is_training_video_frame(subset, media):
-        index = results["index"]
-        filename = os.path.join(cache_dir, f"{subset}-{index:06d}.png")
-        if os.path.exists(filename):
-            loaded_img = load_image_from_cache(filename, to_float32=to_float32)
-            if loaded_img is not None:
-                return loaded_img
+    # if is_training_video_frame(subset, media):
+    #     index = results["index"]
+    #     filename = os.path.join(cache_dir, f"{subset}-{index:06d}.png")
+    #     if os.path.exists(filename):
+    #         loaded_img = load_image_from_cache(filename, to_float32=to_float32)
+    #         if loaded_img is not None:
+    #             return loaded_img
 
-    img = results["dataset_item"].numpy  # this takes long for VideoFrame
+    img = results["dataset_item"].media.data  # this takes long for VideoFrame
     if to_float32:
         img = img.astype(np.float32)
 
-    if is_training_video_frame(subset, media):
-        save_image_to_cache(img, filename)
+    # if is_training_video_frame(subset, media):
+    #     save_image_to_cache(img, filename)
 
     return img
 

@@ -42,7 +42,7 @@ class LoadImageFromOTXDataset:
         if "cache_key" in results:
             return results["cache_key"]
         d_item = results["dataset_item"]
-        results["cache_key"] = d_item.media.path, d_item.roi.id
+        results["cache_key"] = d_item.media.path, d_item.annotations[0].id
         return results["cache_key"]
 
     def _get_memcache_handler(self):
@@ -67,19 +67,13 @@ class LoadImageFromOTXDataset:
 
         if img is None:
             # Get image (possibly from file cache)
-            img = get_image(results, _CACHE_DIR.name, to_float32=False)
+            img = get_image(results, _CACHE_DIR.name, to_float32=self._to_float32)
             if self._enable_memcache:
                 mem_cache_handler.put(key, img)
 
-        if self._to_float32:
-            img = img.astype(np.float32)
         shape = img.shape
-
-        if img.shape[0] != results["height"]:
-            results["height"] = img.shape[0]
-
-        if img.shape[1] != results["width"]:
-            results["width"] = img.shape[1]
+        results["height"] = shape[0]
+        results["width"] = shape[1]
 
         filename = f"Dataset item index {results['index']}"
         results["filename"] = filename
