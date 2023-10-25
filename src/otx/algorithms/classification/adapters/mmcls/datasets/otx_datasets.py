@@ -64,7 +64,7 @@ class OTXClsDataset(BaseDataset):
         include_empty = self.empty_label in self.labels
         for item in self.otx_dataset:
             item_labels = [ann.label for ann in item.annotations] # item.get_roi_labels(self.labels, include_empty=include_empty)
-            ignored_labels = item.attributes.get("ignored_labels", []) # item.ignored_labels
+            ignored_labels = item.attributes.get("ignored_labels", [])
             class_indices = []
             for label in item_labels:
                 if label in ignored_labels:
@@ -77,13 +77,8 @@ class OTXClsDataset(BaseDataset):
 
     def __getitem__(self, index: int):
         """Get item from dataset."""
-        # dataset = self.otx_dataset
-        # item = dataset[index]
-        # gt_label = self.gt_labels[index]
-        # ignored_labels = np.array([self.label_idx[lbs.id] for lbs in item.ignored_labels])
-
         item = self.otx_dataset.get(id=self.item_ids[index])
-        ignored_labels = item.attributes.get("ignored_labels", []) # item.ignored_labels
+        ignored_labels = item.attributes.get("ignored_labels", [])
         gt_label = self.gt_labels[index]
     
         data_info = dict(
