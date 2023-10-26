@@ -139,7 +139,7 @@ def get_image(results: Dict[str, Any], cache_dir: str, to_float32=False) -> np.n
     """
 
     def is_training_video_frame(subset, media) -> bool:
-        return subset.name in ["TRAINING", "VALIDATION"] and "VideoFrame" in repr(media)
+        return subset in ["train", "val"] and "VideoFrame" in repr(media)
 
     def load_image_from_cache(filename: str, to_float32=False) -> Union[np.ndarray, None]:
         try:
@@ -168,15 +168,15 @@ def get_image(results: Dict[str, Any], cache_dir: str, to_float32=False) -> np.n
                 os.remove(tmp_filename)
                 logger.warning(f"Failed to rename {tmp_filename} -> {filename} \nError msg: {e}")
 
-    # subset = results["dataset_item"].subset
-    # media = results["dataset_item"].media
-    # if is_training_video_frame(subset, media):
-    #     index = results["index"]
-    #     filename = os.path.join(cache_dir, f"{subset}-{index:06d}.png")
-    #     if os.path.exists(filename):
-    #         loaded_img = load_image_from_cache(filename, to_float32=to_float32)
-    #         if loaded_img is not None:
-    #             return loaded_img
+    subset = results["dataset_item"].subset
+    media = results["dataset_item"].media
+    if is_training_video_frame(subset, media):
+        index = results["index"]
+        filename = os.path.join(cache_dir, f"{subset}-{index:06d}.png")
+        if os.path.exists(filename):
+            loaded_img = load_image_from_cache(filename, to_float32=to_float32)
+            if loaded_img is not None:
+                return loaded_img
 
     img = results["dataset_item"].media.data  # this takes long for VideoFrame
 
@@ -193,8 +193,8 @@ def get_image(results: Dict[str, Any], cache_dir: str, to_float32=False) -> np.n
     if to_float32:
         img = img.astype(np.float32)
 
-    # if is_training_video_frame(subset, media):
-    #     save_image_to_cache(img, filename)
+    if is_training_video_frame(subset, media):
+        save_image_to_cache(img, filename)
 
     return img
 
@@ -313,7 +313,7 @@ def compute_robust_dataset_statistics(dataset, ann_stat=False, max_samples=1000)
 
     image_sizes = []
     for id, subset in selected_indices:
-        data = dataset.get(id, subset)
+        data = dataset.get(id)
         image_sizes.append(np.sqrt(data.media.size[0] * data.media.size[1]))
     stat["image"] = compute_robust_scale_statistics(np.array(image_sizes))
 
@@ -322,23 +322,21 @@ def compute_robust_dataset_statistics(dataset, ann_stat=False, max_samples=1000)
         num_per_images: List[int] = []
         size_of_shapes: List[float] = []
         for id, subset in selected_indices:
-            data = dataset.get(id, subset)
+            data = dataset.get(id)
             annotations = data.annotations
             num_per_images.append(len(annotations))
 
-            # if len(size_of_shapes) >= max_samples:
-            #     continue
+            if len(size_of_shapes) >= max_samples:
+                continue
 
-            # image_area = data.width * data.height
+            def scale_of(ann):
+                return ann.get_area()
 
-            # def scale_of(ann):
-            #     return np.sqrt(image_area * ann.shape.get_area())
-
-            # size_of_shapes.extend(
-            #     filter(lambda x: x >= 1, map(scale_of, annotations))
-            # )  # Filter out shapes smaller than 1 pixel as outlier
+            size_of_shapes.extend(
+                filter(lambda x: x >= 1, map(scale_of, annotations))
+            )  # Filter out shapes smaller than 1 pixel as outlier
 
         stat["annotation"]["num_per_image"] = compute_robust_statistics(np.array(num_per_images))
-        # stat["annotation"]["size_of_shape"] = compute_robust_scale_statistics(np.array(size_of_shapes))
+        stat["annotation"]["size_of_shape"] = compute_robust_scale_statistics(np.array(size_of_shapes))
 
     return stat

@@ -46,27 +46,20 @@ class ClassificationDatasetAdapter(BaseDatasetAdapter):
 
     def _get_dataset_items(self, fake_ann=False):
         # Set the DatasetItemEntityWithID
-        dataset_items: List[DatasetItemEntityWithID] = []
+        mode_to_str = {Subset.TRAINING: "train", Subset.VALIDATION: "val", Subset.TESTING: "test"}
+
         for subset, subset_data in self.dataset.items():
-            for datumaro_item in subset_data:
-                image = self.datum_media_2_otx_media(datumaro_item.media)
-                assert isinstance(image, Image)
-                if not fake_ann:
-                    datumaro_labels = [ann.label for ann in datumaro_item.annotations if ann.type == DatumAnnotationType.label]
-                else:
-                    datumaro_labels = [0]  # fake label
+            subset_str_mode = mode_to_str[subset]
+            for item in subset_data:
+                item.subset = subset_str_mode
 
-                shapes = self._get_cls_shapes(datumaro_labels)
-                dataset_item = DatasetItemEntityWithID(
-                    image, self._get_ann_scene_entity(shapes), subset=subset, id_=datumaro_item.id
-                )
-
-                dataset_items.append(dataset_item)
-        return dataset_items
+                if fake_ann:
+                    item.annotations = [0]
+        return
 
     def get_otx_dataset(self) -> DatasetEntity:
         """Convert DatumaroDataset to DatasetEntity for Classification."""
-        # return DatasetEntity(items=self._get_dataset_items())
+        self._get_dataset_items()
         return self.dataset
     
     def _get_cls_shapes(self, datumaro_labels: List[int]) -> List[Annotation]:
