@@ -168,8 +168,8 @@ def get_image(results: Dict[str, Any], cache_dir: str, to_float32=False) -> np.n
                 os.remove(tmp_filename)
                 logger.warning(f"Failed to rename {tmp_filename} -> {filename} \nError msg: {e}")
 
-    subset = results["dataset_item"].subset
-    media = results["dataset_item"].media
+    # subset = results["dataset_item"].subset
+    # media = results["dataset_item"].media
     # if is_training_video_frame(subset, media):
     #     index = results["index"]
     #     filename = os.path.join(cache_dir, f"{subset}-{index:06d}.png")
@@ -179,6 +179,17 @@ def get_image(results: Dict[str, Any], cache_dir: str, to_float32=False) -> np.n
     #             return loaded_img
 
     img = results["dataset_item"].media.data  # this takes long for VideoFrame
+
+    # OTX expects RGB format
+    img = img.astype(np.uint8)
+    if len(img.shape) == 2:
+        img = cv2.cvtColor(img, cv2.COLOR_GRAY2RGB)
+    elif len(img.shape) == 3:
+        if img.shape[-1] == 3:
+            img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        if img.shape[-1] == 4:
+            img = cv2.cvtColor(img, cv2.COLOR_BGRA2RGB)
+
     if to_float32:
         img = img.astype(np.float32)
 
