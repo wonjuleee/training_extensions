@@ -1,0 +1,23 @@
+otx.algo.detection.losses
+=========================
+
+.. automodule:: otx.algo.detection.losses
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

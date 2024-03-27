@@ -1,12 +1,11 @@
-
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="../../../../">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Classification model &#8212; OpenVINO™ Training Extensions 1.5.0rc0 documentation</title>
+    <title>Classification model &#8212; OpenVINO™ Training Extensions 2.0.0 documentation</title>
   
   
   
@@ -26,22 +25,22 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2">
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2">
 
-    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css" />
-    <link rel="stylesheet" type="text/css" href="../../../../_static/css/custom.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=949a1ff5" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/tabs.css?v=a5c4661c" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/css/custom.css?v=d626d52b" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=796348d33e8b1d947c94">
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=796348d33e8b1d947c94">
 
-    <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
-    <script src="../../../../_static/jquery.js"></script>
-    <script src="../../../../_static/underscore.js"></script>
-    <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-    <script src="../../../../_static/doctools.js"></script>
-    <script src="../../../../_static/sphinx_highlight.js"></script>
-    <script src="../../../../_static/clipboard.min.js"></script>
-    <script src="../../../../_static/copybutton.js"></script>
+    <script src="../../../../_static/documentation_options.js?v=79f5c508"></script>
+    <script src="../../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../../_static/copybutton.js?v=ff8fa330"></script>
+    <script src="../../../../_static/design-tabs.js?v=36754332"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'guide/tutorials/base/how_to_train/classification';</script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
@@ -223,7 +222,8 @@
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../../get_started/introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../get_started/installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../get_started/cli_commands.html">OpenVINO™ Training Extensions CLI commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../get_started/cli_commands.html">OpenVINO™ Training Extensions CLI Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../get_started/api_tutorial.html">OpenVINO™ Training Extensions API Quick-Start</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul class="current nav bd-sidenav">
@@ -238,17 +238,11 @@
 <li class="toctree-l3"><a class="reference internal" href="action_detection.html">Action Detection model</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../demo.html">How to run the demonstration mode with OpenVINO™ Training Extensions CLI</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../deploy.html">How to deploy the model and use demo in exportable code</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../explain.html">How to explain the model behavior</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../advanced/index.html">Advanced Tutorials</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../advanced/semi_sl.html">Use Semi-Supervised Learning</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../advanced/self_sl.html">Use Self-Supervised Learning</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../advanced/backbones.html">Backbone Replacement</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../advanced/api_tutorial.html">Utilize OpenVINO™ Training Extensions APIs in your project</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../advanced/hpo_tutorial.html">Simple HPO Tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced/configuration.html">How to write OTX Configuration (recipe)</a></li>
 </ul>
 </li>
 </ul>
@@ -276,157 +270,71 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../explanation/algorithms/action/action_detection.html">Action Detection</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../../../explanation/algorithms/visual_prompting/index.html">Visual Prompting</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../explanation/algorithms/visual_prompting/index.html">Visual Prompting</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-9"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../explanation/algorithms/visual_prompting/fine_tuning.html">Visual Prompting (Fine-tuning)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../explanation/algorithms/visual_prompting/zero_shot.html">Visual Prompting (Zero-shot learning)</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../../explanation/additional_features/index.html">Additional Features</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-9"><i class="fa-solid fa-chevron-down"></i></label><ul>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../explanation/additional_features/index.html">Additional Features</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-10"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../explanation/additional_features/models_optimization.html">Models Optimization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../explanation/additional_features/hpo.html">Hyperparameters Optimization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../explanation/additional_features/auto_configuration.html">Auto-configuration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../explanation/additional_features/adaptive_training.html">Adaptive Training</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../explanation/additional_features/xai.html">Explainable AI (XAI)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../explanation/additional_features/noisy_label_detection.html">Noisy Label Detection</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../explanation/additional_features/fast_data_loading.html">Fast Data Loading</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../explanation/additional_features/tiling.html">Improve Small Object Detection with Image Tiling</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../explanation/additional_features/config_input_size.html">Configurable Input Size</a></li>
 </ul>
 </li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../../reference/api/index.html">API</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-10"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../reference/api/configuration/index.html">Configuration</a></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../../../reference/api/entities/index.html">Entities</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-11"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../reference/api/entities/general.html">General</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../reference/api/entities/shapes.html">Shapes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../reference/api/entities/interfaces.html">Interfaces</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../reference/index.html">API reference</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-11"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../reference/_autosummary/otx.html">otx</a><input class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-12"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../reference/_autosummary/otx.algo.html">otx.algo</a><input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-13"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../reference/_autosummary/otx.algo.action_classification.html">otx.algo.action_classification</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../reference/_autosummary/otx.algo.classification.html">otx.algo.classification</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../reference/_autosummary/otx.algo.detection.html">otx.algo.detection</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../reference/_autosummary/otx.algo.segmentation.html">otx.algo.segmentation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../reference/_autosummary/otx.algo.visual_prompting.html">otx.algo.visual_prompting</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../../../reference/api/usecases/index.html">Usecases</a><input class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-12"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../reference/api/usecases/adapters.html">Adapters</a></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../../reference/api/usecases/evaluation.html">Evaluation</a><input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-13"><i class="fa-solid fa-chevron-down"></i></label><ul class="simple">
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../reference/_autosummary/otx.cli.html">otx.cli</a><input class="toctree-checkbox" id="toctree-checkbox-14" name="toctree-checkbox-14" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-14"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../reference/_autosummary/otx.cli.cli.html">otx.cli.cli</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../reference/_autosummary/otx.cli.install.html">otx.cli.install</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../reference/_autosummary/otx.cli.utils.html">otx.cli.utils</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../../../reference/api/usecases/exportable_code.html">Exportable Code</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../reference/api/usecases/reporting.html">Reporting</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../reference/api/usecases/tasks.html">Task interfaces</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../reference/_autosummary/otx.core.html">otx.core</a><input class="toctree-checkbox" id="toctree-checkbox-15" name="toctree-checkbox-15" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-15"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../reference/_autosummary/otx.core.config.html">otx.core.config</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../reference/_autosummary/otx.core.data.html">otx.core.data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../reference/_autosummary/otx.core.exporter.html">otx.core.exporter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../reference/_autosummary/otx.core.metrics.html">otx.core.metrics</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../reference/_autosummary/otx.core.model.html">otx.core.model</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../reference/_autosummary/otx.core.types.html">otx.core.types</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../reference/_autosummary/otx.core.utils.html">otx.core.utils</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../../../reference/_autosummary/otx.data.html">otx.data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../reference/_autosummary/otx.engine.html">otx.engine</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../reference/_autosummary/otx.hpo.html">otx.hpo</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../reference/_autosummary/otx.recipe.html">otx.recipe</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../reference/_autosummary/otx.tools.html">otx.tools</a><input class="toctree-checkbox" id="toctree-checkbox-16" name="toctree-checkbox-16" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-16"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../reference/_autosummary/otx.tools.translate_mmrecipe.html">otx.tools.translate_mmrecipe</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../../reference/algorithm/index.html">Algorithm</a><input class="toctree-checkbox" id="toctree-checkbox-14" name="toctree-checkbox-14" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-14"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../../../reference/algorithm/action/index.html">Action</a><input class="toctree-checkbox" id="toctree-checkbox-15" name="toctree-checkbox-15" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-15"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../../reference/algorithm/action/adapters/index.html">Adapters</a><input class="toctree-checkbox" id="toctree-checkbox-16" name="toctree-checkbox-16" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-16"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../reference/algorithm/action/adapters/mmaction.html">mmaction</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../reference/algorithm/action/adapters/openvino.html">openvino</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../reference/_autosummary/otx.utils.html">otx.utils</a></li>
 </ul>
 </li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../../reference/algorithm/action/configs.html">Configs</a><input class="toctree-checkbox" id="toctree-checkbox-17" name="toctree-checkbox-17" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-17"><i class="fa-solid fa-chevron-down"></i></label><ul class="simple">
-</ul>
-</li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../../reference/algorithm/action/tasks.html">Tasks</a><input class="toctree-checkbox" id="toctree-checkbox-18" name="toctree-checkbox-18" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-18"><i class="fa-solid fa-chevron-down"></i></label><ul class="simple">
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../../../reference/algorithm/anomaly/index.html">Anomaly</a><input class="toctree-checkbox" id="toctree-checkbox-19" name="toctree-checkbox-19" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-19"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../../reference/algorithm/anomaly/adapters/index.html">Adapters</a><input class="toctree-checkbox" id="toctree-checkbox-20" name="toctree-checkbox-20" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-20"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../reference/algorithm/anomaly/adapters/config.html">Config</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../reference/algorithm/anomaly/adapters/data.html">Data</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../reference/algorithm/anomaly/adapters/callbacks.html">Callbacks</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../reference/algorithm/anomaly/adapters/logger.html">Logger</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../reference/algorithm/anomaly/adapters/exportable_code.html">Exportable Code</a></li>
-</ul>
-</li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../../reference/algorithm/anomaly/configs.html">Configs</a><input class="toctree-checkbox" id="toctree-checkbox-21" name="toctree-checkbox-21" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-21"><i class="fa-solid fa-chevron-down"></i></label><ul class="simple">
-</ul>
-</li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../../reference/algorithm/anomaly/tasks.html">Tasks</a><input class="toctree-checkbox" id="toctree-checkbox-22" name="toctree-checkbox-22" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-22"><i class="fa-solid fa-chevron-down"></i></label><ul class="simple">
-</ul>
-</li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../../reference/algorithm/anomaly/tools.html">Tools</a><input class="toctree-checkbox" id="toctree-checkbox-23" name="toctree-checkbox-23" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-23"><i class="fa-solid fa-chevron-down"></i></label><ul class="simple">
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../../../reference/algorithm/classification/index.html">Classification</a><input class="toctree-checkbox" id="toctree-checkbox-24" name="toctree-checkbox-24" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-24"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../../reference/algorithm/classification/adapters/index.html">Adapters</a><input class="toctree-checkbox" id="toctree-checkbox-25" name="toctree-checkbox-25" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-25"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../reference/algorithm/classification/adapters/mmcls.html">mmclassification</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../reference/algorithm/classification/adapters/openvino.html">openvino</a></li>
-</ul>
-</li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../../reference/algorithm/classification/configs.html">Configs</a><input class="toctree-checkbox" id="toctree-checkbox-26" name="toctree-checkbox-26" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-26"><i class="fa-solid fa-chevron-down"></i></label><ul class="simple">
-</ul>
-</li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../../reference/algorithm/classification/tasks.html">Tasks</a><input class="toctree-checkbox" id="toctree-checkbox-27" name="toctree-checkbox-27" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-27"><i class="fa-solid fa-chevron-down"></i></label><ul class="simple">
-</ul>
-</li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../../reference/algorithm/classification/utils.html">Utils</a><input class="toctree-checkbox" id="toctree-checkbox-28" name="toctree-checkbox-28" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-28"><i class="fa-solid fa-chevron-down"></i></label><ul class="simple">
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../../../reference/algorithm/detection/index.html">Detection</a><input class="toctree-checkbox" id="toctree-checkbox-29" name="toctree-checkbox-29" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-29"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../../reference/algorithm/detection/adapters/index.html">Adapters</a><input class="toctree-checkbox" id="toctree-checkbox-30" name="toctree-checkbox-30" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-30"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../reference/algorithm/detection/adapters/mmdet.html">mmdetection</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../reference/algorithm/detection/adapters/openvino.html">openvino</a></li>
-</ul>
-</li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../../reference/algorithm/detection/configs.html">Configs</a><input class="toctree-checkbox" id="toctree-checkbox-31" name="toctree-checkbox-31" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-31"><i class="fa-solid fa-chevron-down"></i></label><ul class="simple">
-</ul>
-</li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../../reference/algorithm/detection/tasks.html">Tasks</a><input class="toctree-checkbox" id="toctree-checkbox-32" name="toctree-checkbox-32" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-32"><i class="fa-solid fa-chevron-down"></i></label><ul class="simple">
-</ul>
-</li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../../reference/algorithm/detection/utils.html">Utils</a><input class="toctree-checkbox" id="toctree-checkbox-33" name="toctree-checkbox-33" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-33"><i class="fa-solid fa-chevron-down"></i></label><ul class="simple">
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../../../reference/algorithm/segmentation/index.html">Segmentation</a><input class="toctree-checkbox" id="toctree-checkbox-34" name="toctree-checkbox-34" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-34"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../../reference/algorithm/segmentation/adapters/index.html">Adapters</a><input class="toctree-checkbox" id="toctree-checkbox-35" name="toctree-checkbox-35" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-35"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../reference/algorithm/segmentation/adapters/mmseg.html">mmsegmentation</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../reference/algorithm/segmentation/adapters/openvino.html">openvino</a></li>
-</ul>
-</li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../../reference/algorithm/segmentation/configs.html">Configs</a><input class="toctree-checkbox" id="toctree-checkbox-36" name="toctree-checkbox-36" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-36"><i class="fa-solid fa-chevron-down"></i></label><ul class="simple">
-</ul>
-</li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../../reference/algorithm/segmentation/tasks.html">Tasks</a><input class="toctree-checkbox" id="toctree-checkbox-37" name="toctree-checkbox-37" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-37"><i class="fa-solid fa-chevron-down"></i></label><ul class="simple">
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../../reference/core/index.html">Core</a><input class="toctree-checkbox" id="toctree-checkbox-38" name="toctree-checkbox-38" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-38"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../../../reference/core/data.html">Data</a><input class="toctree-checkbox" id="toctree-checkbox-39" name="toctree-checkbox-39" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-39"><i class="fa-solid fa-chevron-down"></i></label><ul class="simple">
-</ul>
-</li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../../../reference/core/ov/index.html">OpenVINO</a><input class="toctree-checkbox" id="toctree-checkbox-40" name="toctree-checkbox-40" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-40"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../../reference/core/ov/graph.html">Graph</a><input class="toctree-checkbox" id="toctree-checkbox-41" name="toctree-checkbox-41" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-41"><i class="fa-solid fa-chevron-down"></i></label><ul class="simple">
-</ul>
-</li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../../reference/core/ov/models.html">Models</a><input class="toctree-checkbox" id="toctree-checkbox-42" name="toctree-checkbox-42" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-42"><i class="fa-solid fa-chevron-down"></i></label><ul class="simple">
-</ul>
-</li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../../reference/core/ov/ops.html">OPS</a><input class="toctree-checkbox" id="toctree-checkbox-43" name="toctree-checkbox-43" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-43"><i class="fa-solid fa-chevron-down"></i></label><ul class="simple">
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../../reference/hpo/hpo.html">HPO</a><input class="toctree-checkbox" id="toctree-checkbox-44" name="toctree-checkbox-44" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-44"><i class="fa-solid fa-chevron-down"></i></label><ul class="simple">
-</ul>
-</li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../../reference/mpa/index.html">Model Preparation Algorithm</a><input class="toctree-checkbox" id="toctree-checkbox-45" name="toctree-checkbox-45" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-45"><i class="fa-solid fa-chevron-down"></i></label><ul class="simple">
 </ul>
 </li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Release Notes</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../../../release_notes/index.html">Releases</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../release_notes/index.html">Releases</a><input class="toctree-checkbox" id="toctree-checkbox-17" name="toctree-checkbox-17" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-17"><i class="fa-solid fa-chevron-down"></i></label><ul class="simple">
+</ul>
+</li>
 </ul>
 
   </div>
@@ -459,21 +367,19 @@
             <article class="bd-article" role="main">
               
   <section id="classification-model">
-<h1>Classification  model<a class="headerlink" href="#classification-model" title="Permalink to this heading">#</a></h1>
+<h1>Classification  model<a class="headerlink" href="#classification-model" title="Link to this heading">#</a></h1>
 <p>This live example shows how to easily train, validate, optimize and export classification model on the <a class="reference external" href="https://www.tensorflow.org/hub/tutorials/image_feature_vector#the_flowers_dataset">flowers dataset</a> from TensorFlow.
 To learn more about Classification task, refer to <a class="reference internal" href="../../../explanation/algorithms/classification/index.html"><span class="doc">Classification</span></a>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>To learn deeper how to manage training process of the model including additional parameters and its modification, refer to <a class="reference internal" href="detection.html"><span class="doc">Object Detection model</span></a>.</p>
-<p>To learn how to deploy the trained model, refer to: <a class="reference internal" href="../deploy.html"><span class="doc">How to deploy the model and use demo in exportable code</span></a>.</p>
-<p>To learn how to run the demo and visualize results, refer to: <a class="reference internal" href="../demo.html"><span class="doc">How to run the demonstration mode with OpenVINO™ Training Extensions CLI</span></a>.</p>
+<p>To learn deeper how to manage training process of the model including additional parameters and its modification, refer to <a class="reference internal" href="#"><span class="doc">Classification  model</span></a>.</p>
 </div>
 <p>The process has been tested on the following configuration.</p>
 <ul class="simple">
 <li><p>Ubuntu 20.04</p></li>
 <li><p>NVIDIA GeForce RTX 3090</p></li>
 <li><p>Intel(R) Core(TM) i9-10980XE</p></li>
-<li><p>CUDA Toolkit 11.1</p></li>
+<li><p>CUDA Toolkit 11.8</p></li>
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -481,25 +387,37 @@ To learn more about Classification task, refer to <a class="reference internal" 
 Substitute the dataset with a multi-label or hierarchical one. Everything else remains the same.</p>
 </div>
 <section id="setup-virtual-environment">
-<h2>Setup virtual environment<a class="headerlink" href="#setup-virtual-environment" title="Permalink to this heading">#</a></h2>
+<h2>Setup virtual environment<a class="headerlink" href="#setup-virtual-environment" title="Link to this heading">#</a></h2>
 <p>1. You can follow the installation process from a <a class="reference internal" href="../../../get_started/installation.html"><span class="doc">quick start guide</span></a>
 to create a universal virtual environment for OpenVINO™ Training Extensions.</p>
 <p>2. Activate your virtual
 environment:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">.</span><span class="n">otx</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span>
-<span class="c1"># or by this line, if you created an environment, using tox</span>
-<span class="o">.</span> <span class="n">venv</span><span class="o">/</span><span class="n">otx</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>.otx/bin/activate
+.<span class="w"> </span>venv/otx/bin/activate
 </pre></div>
 </div>
 </section>
 <section id="dataset-preparation">
-<h2>Dataset preparation<a class="headerlink" href="#dataset-preparation" title="Permalink to this heading">#</a></h2>
+<h2>Dataset preparation<a class="headerlink" href="#dataset-preparation" title="Link to this heading">#</a></h2>
 <p>Download and prepare a <a class="reference external" href="https://www.tensorflow.org/hub/tutorials/image_feature_vector#the_flowers_dataset">flowers dataset</a>
 with the following command:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">data</span>
-<span class="n">wget</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">download</span><span class="o">.</span><span class="n">tensorflow</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">example_images</span><span class="o">/</span><span class="n">flower_photos</span><span class="o">.</span><span class="n">tgz</span>
-<span class="n">tar</span> <span class="o">-</span><span class="n">xzvf</span> <span class="n">flower_photos</span><span class="o">.</span><span class="n">tgz</span>
-<span class="n">cd</span> <span class="o">..</span>
+<p>To prepare the classification dataset, need to make the directory for the train/validation and test.
+Since this is just example, we’ll use the same train/val/test datasets.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>data
+
+<span class="c1"># download and unzip the data</span>
+wget<span class="w"> </span>http://download.tensorflow.org/example_images/flower_photos.tgz
+tar<span class="w"> </span>-xzvf<span class="w"> </span>flower_photos.tgz
+
+<span class="c1"># construct the data structure to insert to the OTX</span>
+<span class="nb">cd</span><span class="w"> </span>flower_photos
+mkdir<span class="w"> </span>train
+mv<span class="w"> </span>daisy<span class="w"> </span>dandelion<span class="w"> </span>roses<span class="w"> </span>sunflowers<span class="w"> </span>tulips<span class="w"> </span>train
+cp<span class="w"> </span>-r<span class="w"> </span>train<span class="w"> </span>val
+cp<span class="w"> </span>-r<span class="w"> </span>train<span class="w"> </span><span class="nb">test</span>
+
+<span class="c1"># move the original directory</span>
+<span class="nb">cd</span><span class="w"> </span>../..
 </pre></div>
 </div>
 <div class="line-block">
@@ -509,154 +427,454 @@ with the following command:</p>
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
-<p>This dataset contains images of 5 different flower categories and is stored in the ImageNet format which is supported by OpenVINO™ Training Extensions:</p>
+<p>Then the final dataset directory likes below,
+please keep the exact same name for the train/val/test folder, to identify the dataset.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>flower_photos
-  ├── daisy
-  ├── dandelion
-  ├── roses
-  ├── sunflowers
-  ├── tulips
+  train
+    ├── daisy
+    ├── dandelion
+    ├── roses
+    ├── sunflowers
+    ├── tulips
+  val
+    ├── daisy
+    ├── ...
+  test
+    ├── daisy
+    ├── ...
 </pre></div>
 </div>
 </section>
 <section id="training">
-<h2>Training<a class="headerlink" href="#training" title="Permalink to this heading">#</a></h2>
+<h2>Training<a class="headerlink" href="#training" title="Link to this heading">#</a></h2>
 <p>1. First of all, you need to choose which classification model you want to train.
 The list of supported templates for classification is available with the command line below.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The characteristics and detailed comparison of the models could be found in <a class="reference internal" href="../../../explanation/algorithms/classification/multi_class_classification.html"><span class="doc">Explanation section</span></a>.</p>
-<p>You also can modify the architecture of supported models with various backbones. To do that, please refer to the <a class="reference internal" href="../../advanced/backbones.html"><span class="doc">advanced tutorial for model customization</span></a>.</p>
+<p>You also can modify the architecture of supported models with various backbones. To do that, please refer to the <span class="xref std std-doc">advanced tutorial for model customization</span>.</p>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(otx) ...$ otx find --task classification
-
-+----------------+---------------------------------------------------+-----------------------+---------------------------------------------------------------------------------------+
-|      TASK      |                         ID                        |          NAME         |                                          PATH                                         |
-+----------------+---------------------------------------------------+-----------------------+---------------------------------------------------------------------------------------+
-| CLASSIFICATION | Custom_Image_Classification_MobileNet-V3-large-1x | MobileNet-V3-large-1x | src/otx/algorithms/classification/configs/mobilenet_v3_large_1_cls_incr/template.yaml |
-| CLASSIFICATION |    Custom_Image_Classification_EfficinetNet-B0    |    EfficientNet-B0    |    src/otx/algorithms/classification/configs/efficientnet_b0_cls_incr/template.yaml   |
-| CLASSIFICATION |   Custom_Image_Classification_EfficientNet-V2-S   |   EfficientNet-V2-S   |   src/otx/algorithms/classification/configs/efficientnet_v2_s_cls_incr/template.yaml  |
-+----------------+---------------------------------------------------+-----------------------+---------------------------------------------------------------------------------------+
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-0" name="sd-tab-set-0" type="radio">
+</input><label class="sd-tab-label" for="sd-tab-item-0">
+CLI</label><div class="sd-tab-content docutils">
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="o">(</span>otx<span class="o">)</span><span class="w"> </span>...$<span class="w"> </span>otx<span class="w"> </span>find<span class="w"> </span>--task<span class="w"> </span>MULTI_CLASS_CLS
+┏━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃<span class="w"> </span>Task<span class="w">            </span>┃<span class="w"> </span>Model<span class="w"> </span>Name<span class="w">               </span>┃<span class="w"> </span>Recipe<span class="w"> </span>Path<span class="w">                                                                    </span>┃
+┡━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│<span class="w"> </span>MULTI_CLASS_CLS<span class="w"> </span>│<span class="w"> </span>openvino_model<span class="w">           </span>│<span class="w"> </span>src/otx/recipe/classification/multi_class_cls/openvino_model.yaml<span class="w">              </span>│
+│<span class="w"> </span>MULTI_CLASS_CLS<span class="w"> </span>│<span class="w"> </span>tv_efficientnet_b0<span class="w">       </span>│<span class="w"> </span>src/otx/recipe/classification/multi_class_cls/tv_efficientnet_b0.yaml<span class="w">          </span>│
+│<span class="w"> </span>MULTI_CLASS_CLS<span class="w"> </span>│<span class="w"> </span>tv_resnet_50<span class="w">             </span>│<span class="w"> </span>src/otx/recipe/classification/multi_class_cls/tv_resnet_50.yaml<span class="w">                </span>│
+│<span class="w"> </span>MULTI_CLASS_CLS<span class="w"> </span>│<span class="w"> </span>efficientnet_v2_light<span class="w">    </span>│<span class="w"> </span>src/otx/recipe/classification/multi_class_cls/efficientnet_v2_light.yaml<span class="w">       </span>│
+│<span class="w"> </span>MULTI_CLASS_CLS<span class="w"> </span>│<span class="w"> </span>tv_efficientnet_b3<span class="w">       </span>│<span class="w"> </span>src/otx/recipe/classification/multi_class_cls/tv_efficientnet_b3.yaml<span class="w">          </span>│
+│<span class="w"> </span>MULTI_CLASS_CLS<span class="w"> </span>│<span class="w"> </span>efficientnet_b0_light<span class="w">    </span>│<span class="w"> </span>src/otx/recipe/classification/multi_class_cls/efficientnet_b0_light.yaml<span class="w">       </span>│
+│<span class="w"> </span>MULTI_CLASS_CLS<span class="w"> </span>│<span class="w"> </span>tv_efficientnet_v2_l<span class="w">     </span>│<span class="w"> </span>src/otx/recipe/classification/multi_class_cls/tv_efficientnet_v2_l.yaml<span class="w">        </span>│
+│<span class="w"> </span>MULTI_CLASS_CLS<span class="w"> </span>│<span class="w"> </span>tv_efficientnet_b1<span class="w">       </span>│<span class="w"> </span>src/otx/recipe/classification/multi_class_cls/tv_efficientnet_b1.yaml<span class="w">          </span>│
+│<span class="w"> </span>MULTI_CLASS_CLS<span class="w"> </span>│<span class="w"> </span>tv_mobilenet_v3_small<span class="w">    </span>│<span class="w"> </span>src/otx/recipe/classification/multi_class_cls/tv_mobilenet_v3_small.yaml<span class="w">       </span>│
+│<span class="w"> </span>MULTI_CLASS_CLS<span class="w"> </span>│<span class="w"> </span>otx_mobilenet_v3_large<span class="w">   </span>│<span class="w"> </span>src/otx/recipe/classification/multi_class_cls/otx_mobilenet_v3_large.yaml<span class="w">      </span>│
+│<span class="w"> </span>MULTI_CLASS_CLS<span class="w"> </span>│<span class="w"> </span>otx_deit_tiny<span class="w">            </span>│<span class="w"> </span>src/otx/recipe/classification/multi_class_cls/otx_deit_tiny.yaml<span class="w">               </span>│
+│<span class="w"> </span>MULTI_CLASS_CLS<span class="w"> </span>│<span class="w"> </span>tv_efficientnet_b4<span class="w">       </span>│<span class="w"> </span>src/otx/recipe/classification/multi_class_cls/tv_efficientnet_b4.yaml<span class="w">          </span>│
+│<span class="w"> </span>MULTI_CLASS_CLS<span class="w"> </span>│<span class="w"> </span>otx_efficientnet_v2<span class="w">      </span>│<span class="w"> </span>src/otx/recipe/classification/multi_class_cls/otx_efficientnet_v2.yaml<span class="w">         </span>│
+│<span class="w"> </span>MULTI_CLASS_CLS<span class="w"> </span>│<span class="w"> </span>mobilenet_v3_large_light<span class="w"> </span>│<span class="w"> </span>src/otx/recipe/classification/multi_class_cls/mobilenet_v3_large_light.yaml<span class="w">    </span>│
+│<span class="w"> </span>MULTI_CLASS_CLS<span class="w"> </span>│<span class="w"> </span>otx_efficientnet_b0<span class="w">      </span>│<span class="w"> </span>src/otx/recipe/classification/multi_class_cls/otx_efficientnet_b0.yaml<span class="w">         </span>│
+│<span class="w"> </span>MULTI_CLASS_CLS<span class="w"> </span>│<span class="w"> </span>otx_dino_v2<span class="w">              </span>│<span class="w"> </span>src/otx/recipe/classification/multi_class_cls/otx_dino_v2.yaml<span class="w">                 </span>│
+│<span class="w"> </span>MULTI_CLASS_CLS<span class="w"> </span>│<span class="w"> </span>otx_dino_v2_linear_probe<span class="w"> </span>│<span class="w"> </span>src/otx/recipe/classification/multi_class_cls/otx_dino_v2_linear_probe.yaml<span class="w">    </span>│
+└─────────────────┴──────────────────────────┴────────────────────────────────────────────────────────────────────────────────┘
 </pre></div>
 </div>
-<p>To have a specific example in this tutorial, all commands will be run on the <a class="reference internal" href="../../../explanation/algorithms/classification/multi_class_classification.html#classification-models"><span class="std std-ref">MobileNet-V3-large-1x</span></a>  model. It’s a light model, that achieves competitive accuracy while keeping the inference fast.</p>
-<p>2.  Next, you need to create train/validation sets. OpenVINO™ Training Extensions supports auto-split functionality for the multi-class classification.
-For other classification types you need to prepare splits in advance.</p>
+</div>
+<input id="sd-tab-item-1" name="sd-tab-set-0" type="radio">
+</input><label class="sd-tab-label" for="sd-tab-item-1">
+API</label><div class="sd-tab-content docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">otx.engine.utils.api</span> <span class="kn">import</span> <span class="n">list_models</span>
+
+<span class="n">model_lists</span> <span class="o">=</span> <span class="n">list_models</span><span class="p">(</span><span class="n">task</span><span class="o">=</span><span class="s2">&quot;MULTI_CLASS_CLS&quot;</span><span class="p">,</span> <span class="n">pattern</span><span class="o">=</span><span class="s2">&quot;*efficient&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">model_lists</span><span class="p">)</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">[</span>
+<span class="sd">  &#39;otx_efficientnet_b0&#39;,</span>
+<span class="sd">  &#39;efficientnet_v2_light&#39;,</span>
+<span class="sd">  &#39;efficientnet_b0_light&#39;,</span>
+<span class="sd">  ...</span>
+<span class="sd">]</span>
+<span class="sd">&#39;&#39;&#39;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>2. On this step we will prepare custom configuration
+with:</p>
+<ul class="simple">
+<li><p>all necessary configs for otx_efficientnet_b0</p></li>
+<li><p>train/validation sets, based on provided annotation.</p></li>
+</ul>
+<p>It may be counterintuitive, but for <code class="docutils literal notranslate"><span class="pre">--data_root</span></code> we need to pass the path to the dataset folder root (in our case it’s <code class="docutils literal notranslate"><span class="pre">data/flower_photos</span></code>) instead of the folder with validation images.
+This is because the function automatically detects annotations and images according to the expected folder structure we achieved above.</p>
+<p>Let’s check the multi-class classification configuration running the following command:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="o">(</span>otx<span class="o">)</span><span class="w"> </span>...$<span class="w"> </span>otx<span class="w"> </span>train<span class="w"> </span>--config<span class="w"> </span>src/otx/recipe/classification/multi_class_cls/otx_mobilenet_v3_large.yaml<span class="w">  </span>--data_root<span class="w"> </span>data/flower_photos<span class="w"> </span>--print_config
+
+...
+data_root:<span class="w"> </span>data/flower_photos
+work_dir:<span class="w"> </span>otx-workspace
+callback_monitor:<span class="w"> </span>val/accuracy
+disable_infer_num_classes:<span class="w"> </span><span class="nb">false</span>
+engine:
+<span class="w">  </span>task:<span class="w"> </span>MULTI_CLASS_CLS
+<span class="w">  </span>device:<span class="w"> </span>auto
+data:
+...
+</pre></div>
+</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Currently, OpenVINO™ Training Extensions supports auto-split only for multi-class classification. For the multi-label and hierarchical tasks you need to prepare data splits in advance.</p>
-</div>
-<p>Let’s prepare an OpenVINO™ Training Extensions classification workspace running the following command:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(otx) ...$ otx build --train-data-roots data/flower_photos --model MobileNet-V3-large-1x
-
-[*] Load Model Template ID: Custom_Image_Classification_MobileNet-V3-large-1x
-[*] Load Model Name: MobileNet-V3-large-1x
-[*] Saving data configuration file to: ./otx-workspace-CLASSIFICATION/data.yaml
-
-(otx) ...$ cd ./otx-workspace-CLASSIFICATION
+<p>If you want to get configuration as yaml file, please use <code class="docutils literal notranslate"><span class="pre">--print_config</span></code> parameter and <code class="docutils literal notranslate"><span class="pre">&gt;</span> <span class="pre">configs.yaml</span></code>.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="o">(</span>otx<span class="o">)</span><span class="w"> </span>...$<span class="w"> </span>otx<span class="w"> </span>train<span class="w"> </span>--config<span class="w">  </span>src/otx/recipe/classification/multi_class_cls/otx_mobilenet_v3_large.yaml<span class="w"> </span>--data_root<span class="w"> </span>data/flower_photos<span class="w"> </span>--print_config<span class="w"> </span>&gt;<span class="w"> </span>configs.yaml
+<span class="c1"># Update configs.yaml &amp; Train configs.yaml</span>
+<span class="o">(</span>otx<span class="o">)</span><span class="w"> </span>...$<span class="w"> </span>otx<span class="w"> </span>train<span class="w"> </span>--config<span class="w"> </span>configs.yaml
 </pre></div>
 </div>
-<p>It will create <strong>otx-workspace-CLASSIFICATION</strong> with all necessary configs for MobileNet-V3-large-1x, prepared <code class="docutils literal notranslate"><span class="pre">data.yaml</span></code> to simplify CLI commands launch and splitted dataset named <code class="docutils literal notranslate"><span class="pre">splitted_dataset</span></code>.</p>
-<p>3. To start training you need to call <code class="docutils literal notranslate"><span class="pre">otx</span> <span class="pre">train</span></code>
-command in our workspace:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(otx) ...$ otx train
+</div>
+<p>3. <code class="docutils literal notranslate"><span class="pre">otx</span> <span class="pre">train</span></code> trains a model (a particular model template)
+on a dataset and results:</p>
+<p>Here are the main outputs can expect with CLI:
+- <code class="docutils literal notranslate"><span class="pre">{work_dir}/{timestamp}/checkpoints/epoch_*.ckpt</span></code> - a model checkpoint file.
+- <code class="docutils literal notranslate"><span class="pre">{work_dir}/{timestamp}/configs.yaml</span></code> - The configuration file used in the training can be reused to reproduce the training.
+- <code class="docutils literal notranslate"><span class="pre">{work_dir}/.latest</span></code> - The results of each of the most recently executed subcommands are soft-linked. This allows you to skip checkpoints and config file entry as a workspace.</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-2" name="sd-tab-set-1" type="radio">
+</input><label class="sd-tab-label" for="sd-tab-item-2">
+CLI (auto-config)</label><div class="sd-tab-content docutils">
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="o">(</span>otx<span class="o">)</span><span class="w"> </span>...$<span class="w"> </span>otx<span class="w"> </span>train<span class="w"> </span>--data_root<span class="w"> </span>data/flower_photos
 </pre></div>
 </div>
-<p>That’s it! The training will return artifacts: <code class="docutils literal notranslate"><span class="pre">weights.pth</span></code> and <code class="docutils literal notranslate"><span class="pre">label_schema.json</span></code>, which are needed as input for the further commands: <code class="docutils literal notranslate"><span class="pre">export</span></code>, <code class="docutils literal notranslate"><span class="pre">eval</span></code>,  <code class="docutils literal notranslate"><span class="pre">optimize</span></code>,  etc.</p>
-<p>The training time highly relies on the hardware characteristics, for example on 1 NVIDIA GeForce RTX 3090 the training took about 8 minutes.</p>
-<p>After that, you have the PyTorch classification model trained with OpenVINO™ Training Extensions, which you can use for evaluation, export, optimization and deployment.</p>
+</div>
+<input id="sd-tab-item-3" name="sd-tab-set-1" type="radio">
+</input><label class="sd-tab-label" for="sd-tab-item-3">
+CLI (with config)</label><div class="sd-tab-content docutils">
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="o">(</span>otx<span class="o">)</span><span class="w"> </span>...$<span class="w"> </span>otx<span class="w"> </span>train<span class="w"> </span>--config<span class="w"> </span>src/otx/recipe/classification/multi_class_cls/otx_mobilenet_v3_large.yaml<span class="w"> </span>--data_root<span class="w"> </span>data/flower_photos
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-4" name="sd-tab-set-1" type="radio">
+</input><label class="sd-tab-label" for="sd-tab-item-4">
+API (from_config)</label><div class="sd-tab-content docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">otx.engine</span> <span class="kn">import</span> <span class="n">Engine</span>
+
+<span class="n">data_root</span> <span class="o">=</span> <span class="s2">&quot;data/flower_photos&quot;</span>
+<span class="n">recipe</span> <span class="o">=</span> <span class="s2">&quot;src/otx/recipe/classification/multi_class_cls/otx_mobilenet_v3_large.yaml&quot;</span>
+
+<span class="n">engine</span> <span class="o">=</span> <span class="n">Engine</span><span class="o">.</span><span class="n">from_config</span><span class="p">(</span>
+          <span class="n">config_path</span><span class="o">=</span><span class="n">recipe</span><span class="p">,</span>
+          <span class="n">data_root</span><span class="o">=</span><span class="n">data_root</span><span class="p">,</span>
+          <span class="n">work_dir</span><span class="o">=</span><span class="s2">&quot;otx-workspace&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+
+<span class="n">engine</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-5" name="sd-tab-set-1" type="radio">
+</input><label class="sd-tab-label" for="sd-tab-item-5">
+API</label><div class="sd-tab-content docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">otx.engine</span> <span class="kn">import</span> <span class="n">Engine</span>
+
+<span class="n">data_root</span> <span class="o">=</span> <span class="s2">&quot;data/flower_photos&quot;</span>
+
+<span class="n">engine</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span>
+          <span class="n">model</span><span class="o">=</span><span class="s2">&quot;otx_mobilenet_v3_large&quot;</span><span class="p">,</span>
+          <span class="n">data_root</span><span class="o">=</span><span class="n">data_root</span><span class="p">,</span>
+          <span class="n">work_dir</span><span class="o">=</span><span class="s2">&quot;otx-workspace&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+
+<span class="n">engine</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>4. <code class="docutils literal notranslate"><span class="pre">(Optional)</span></code> Additionally, we can tune training parameters such as batch size, learning rate, patience epochs or warm-up iterations.
+Learn more about specific parameters using <code class="docutils literal notranslate"><span class="pre">otx</span> <span class="pre">train</span> <span class="pre">--help</span> <span class="pre">-v</span></code> or <code class="docutils literal notranslate"><span class="pre">otx</span> <span class="pre">train</span> <span class="pre">--help</span> <span class="pre">-vv</span></code>.</p>
+<p>For example, to decrease the batch size to 4, fix the number of epochs to 100, extend the command line above with the following line.</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-6" name="sd-tab-set-2" type="radio">
+</input><label class="sd-tab-label" for="sd-tab-item-6">
+CLI</label><div class="sd-tab-content docutils">
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="o">(</span>otx<span class="o">)</span><span class="w"> </span>...$<span class="w"> </span>otx<span class="w"> </span>train<span class="w"> </span>...<span class="w"> </span>--data.config.train_subset.batch_size<span class="w"> </span><span class="m">4</span><span class="w"> </span><span class="se">\</span>
+<span class="w">                         </span>--max_epochs<span class="w"> </span><span class="m">100</span>
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-7" name="sd-tab-set-2" type="radio">
+</input><label class="sd-tab-label" for="sd-tab-item-7">
+API</label><div class="sd-tab-content docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">otx.core.config.data</span> <span class="kn">import</span> <span class="n">DataModuleConfig</span><span class="p">,</span> <span class="n">SubsetConfig</span>
+<span class="kn">from</span> <span class="nn">otx.core.data.module</span> <span class="kn">import</span> <span class="n">OTXDataModule</span>
+<span class="kn">from</span> <span class="nn">otx.engine</span> <span class="kn">import</span> <span class="n">Engine</span>
+
+<span class="n">data_config</span> <span class="o">=</span> <span class="n">DataModuleConfig</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">train_subset</span><span class="o">=</span><span class="n">SubsetConfig</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">4</span><span class="p">))</span>
+<span class="n">datamodule</span> <span class="o">=</span> <span class="n">OTXDataModule</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">data_config</span><span class="p">)</span>
+
+<span class="n">engine</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">datamodule</span><span class="o">=</span><span class="n">datamodule</span><span class="p">)</span>
+
+<span class="n">engine</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">max_epochs</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>5. The training result <code class="docutils literal notranslate"><span class="pre">checkpoints/*.ckpt</span></code> file is located in <code class="docutils literal notranslate"><span class="pre">{work_dir}</span></code> folder,
+while training logs can be found in the <code class="docutils literal notranslate"><span class="pre">{work_dir}/{timestamp}</span></code> dir.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>If you specified <code class="docutils literal notranslate"><span class="pre">--workspace</span></code>, you also can visualize the training using <code class="docutils literal notranslate"><span class="pre">Tensorboard</span></code> as these logs are located in <code class="docutils literal notranslate"><span class="pre">&lt;work_dir&gt;/tf_logs</span></code>.</p>
+<p>We also can visualize the training using <code class="docutils literal notranslate"><span class="pre">Tensorboard</span></code> as these logs are located in <code class="docutils literal notranslate"><span class="pre">{work_dir}/{timestamp}/tensorboard</span></code>.</p>
 </div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>otx-workspace
+├── outputs/
+    ├── 20240403_134256/
+        ├── csv/
+        ├── checkpoints/
+        |   └── epoch_*.pth
+        ├── tensorboard/
+        └── configs.yaml
+    └── .latest
+        └── train/
+...
+</pre></div>
+</div>
+<p>The training time highly relies on the hardware characteristics, for example on 1 NVIDIA GeForce RTX 3090 the training took about 3 minutes.</p>
+<p>After that, we have the PyTorch multi-class classification model trained with OpenVINO™ Training Extensions, which we can use for evaliation, export, optimization and deployment.</p>
 </section>
-<section id="validation">
-<h2>Validation<a class="headerlink" href="#validation" title="Permalink to this heading">#</a></h2>
-<p>1. <code class="docutils literal notranslate"><span class="pre">otx</span> <span class="pre">eval</span></code> runs evaluation of a trained
-model on a specific dataset.</p>
-<p>The eval function receives test annotation information and model snapshot, trained in the previous step.
-Please note, <code class="docutils literal notranslate"><span class="pre">label_schema.json</span></code> file contains meta information about the dataset and it should be located in the same folder as the model snapshot.</p>
-<p><code class="docutils literal notranslate"><span class="pre">otx</span> <span class="pre">eval</span></code> will calculate a top-1 accuracy score for multi-class classification.</p>
-<p>2. The command below will run validation on our dataset
-and save performance results in <code class="docutils literal notranslate"><span class="pre">performance.json</span></code> file:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(otx) ...$ otx eval --test-data-roots splitted_dataset/val \
-                    --load-weights models/weights.pth \
-                    --output outputs
+<section id="evaluation">
+<h2>Evaluation<a class="headerlink" href="#evaluation" title="Link to this heading">#</a></h2>
+<p>1. <code class="docutils literal notranslate"><span class="pre">otx</span> <span class="pre">test</span></code> runs evaluation of a
+trained model on a particular dataset.</p>
+<p>Test function receives test annotation information and model snapshot, trained in previous step.</p>
+<p>The default metric is accuracy measure.</p>
+<p>2. That’s how we can evaluate the snapshot in <code class="docutils literal notranslate"><span class="pre">otx-workspace</span></code>
+folder on flower_photos dataset and save results to <code class="docutils literal notranslate"><span class="pre">otx-workspace</span></code>:</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-8" name="sd-tab-set-3" type="radio">
+</input><label class="sd-tab-label" for="sd-tab-item-8">
+CLI (with work_dir)</label><div class="sd-tab-content docutils">
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="o">(</span>otx<span class="o">)</span><span class="w"> </span>...$<span class="w"> </span>otx<span class="w"> </span><span class="nb">test</span><span class="w"> </span>--work_dir<span class="w"> </span>otx-workspace
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃<span class="w">        </span>Test<span class="w"> </span>metric<span class="w">        </span>┃<span class="w">       </span>DataLoader<span class="w"> </span><span class="m">0</span><span class="w">        </span>┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│<span class="w">      </span>test/data_time<span class="w">       </span>│<span class="w">    </span><span class="m">0</span>.9929155111312866<span class="w">     </span>│
+│<span class="w">       </span>test/map_50<span class="w">         </span>│<span class="w">    </span><span class="m">0</span>.0430680550634861<span class="w">     </span>│
+│<span class="w">      </span>test/iter_time<span class="w">       </span>│<span class="w">    </span><span class="m">0</span>.058606021106243134<span class="w">   </span>│
+└───────────────────────────┴───────────────────────────┘
 </pre></div>
 </div>
-<p>You will get a similar validation output:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">...</span>
-
-<span class="mi">2023</span><span class="o">-</span><span class="mi">02</span><span class="o">-</span><span class="mi">03</span> <span class="mi">23</span><span class="p">:</span><span class="mi">43</span><span class="p">:</span><span class="mi">29</span><span class="p">,</span><span class="mi">514</span> <span class="o">|</span> <span class="n">INFO</span> <span class="p">:</span> <span class="n">run</span> <span class="n">task</span> <span class="n">done</span><span class="o">.</span>
-<span class="mi">2023</span><span class="o">-</span><span class="mi">02</span><span class="o">-</span><span class="mi">03</span> <span class="mi">23</span><span class="p">:</span><span class="mi">43</span><span class="p">:</span><span class="mi">35</span><span class="p">,</span><span class="mi">859</span> <span class="o">|</span> <span class="n">INFO</span> <span class="p">:</span> <span class="n">called</span> <span class="n">evaluate</span><span class="p">()</span>
-<span class="mi">2023</span><span class="o">-</span><span class="mi">02</span><span class="o">-</span><span class="mi">03</span> <span class="mi">23</span><span class="p">:</span><span class="mi">43</span><span class="p">:</span><span class="mi">35</span><span class="p">,</span><span class="mi">870</span> <span class="o">|</span> <span class="n">INFO</span> <span class="p">:</span> <span class="n">Accuracy</span> <span class="n">after</span> <span class="n">evaluation</span><span class="p">:</span> <span class="mf">0.9659400544959128</span>
-<span class="mi">2023</span><span class="o">-</span><span class="mi">02</span><span class="o">-</span><span class="mi">03</span> <span class="mi">23</span><span class="p">:</span><span class="mi">43</span><span class="p">:</span><span class="mi">35</span><span class="p">,</span><span class="mi">871</span> <span class="o">|</span> <span class="n">INFO</span> <span class="p">:</span> <span class="n">Evaluation</span> <span class="n">completed</span>
-<span class="n">Performance</span><span class="p">(</span><span class="n">score</span><span class="p">:</span> <span class="mf">0.9659400544959128</span><span class="p">,</span> <span class="n">dashboard</span><span class="p">:</span> <span class="p">(</span><span class="mi">3</span> <span class="n">metric</span> <span class="n">groups</span><span class="p">))</span>
+</div>
+<input id="sd-tab-item-9" name="sd-tab-set-3" type="radio">
+</input><label class="sd-tab-label" for="sd-tab-item-9">
+CLI (with config)</label><div class="sd-tab-content docutils">
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="o">(</span>otx<span class="o">)</span><span class="w"> </span>...$<span class="w"> </span>otx<span class="w"> </span><span class="nb">test</span><span class="w"> </span>--config<span class="w">  </span>src/otx/recipe/classification/multi_class_cls/otx_mobilenet_v3_large.yaml<span class="w"> </span><span class="se">\</span>
+<span class="w">                    </span>--data_root<span class="w"> </span>data/flower_photos<span class="w"> </span><span class="se">\</span>
+<span class="w">                    </span>--checkpoint<span class="w"> </span>otx-workspace/20240312_051135/checkpoints/epoch_014.ckpt
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃<span class="w">        </span>Test<span class="w"> </span>metric<span class="w">        </span>┃<span class="w">       </span>DataLoader<span class="w"> </span><span class="m">0</span><span class="w">        </span>┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│<span class="w">      </span>test/data_time<span class="w">       </span>│<span class="w">    </span><span class="m">0</span>.9929155111312866<span class="w">     </span>│
+│<span class="w">       </span>test/map_50<span class="w">         </span>│<span class="w">    </span><span class="m">0</span>.0430680550634861<span class="w">     </span>│
+│<span class="w">      </span>test/iter_time<span class="w">       </span>│<span class="w">    </span><span class="m">0</span>.058606021106243134<span class="w">   </span>│
+└───────────────────────────┴───────────────────────────┘
 </pre></div>
 </div>
+</div>
+<input id="sd-tab-item-10" name="sd-tab-set-3" type="radio">
+</input><label class="sd-tab-label" for="sd-tab-item-10">
+API</label><div class="sd-tab-content docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">engine</span><span class="o">.</span><span class="n">test</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>3. The output of <code class="docutils literal notranslate"><span class="pre">{work_dir}/{timestamp}/csv/version_0/metrics.csv</span></code> consists of
+a dict with target metric name and its value.</p>
 </section>
 <section id="export">
-<h2>Export<a class="headerlink" href="#export" title="Permalink to this heading">#</a></h2>
+<h2>Export<a class="headerlink" href="#export" title="Link to this heading">#</a></h2>
 <p>1. <code class="docutils literal notranslate"><span class="pre">otx</span> <span class="pre">export</span></code> exports a trained Pytorch <cite>.pth</cite> model to the OpenVINO™ Intermediate Representation (IR) format.
-It allows running the model on the Intel hardware much more efficient, especially on the CPU. Also, the resulting IR model is required to run POT optimization. IR model consists of 2 files: <code class="docutils literal notranslate"><span class="pre">openvino.xml</span></code> for weights and <code class="docutils literal notranslate"><span class="pre">openvino.bin</span></code> for architecture.</p>
-<p>2. You can run the below command line to export the trained model
-and save the exported model to the <code class="docutils literal notranslate"><span class="pre">openvino_model</span></code> folder:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(otx) ...$ otx export --load-weights models/weights.pth \
-                      --output openvino_model
-
+It allows to efficiently run it on Intel hardware, especially on CPU, using OpenVINO™ runtime.
+Also, the resulting IR model is required to run PTQ optimization in the section below. IR model contains 2 files: <code class="docutils literal notranslate"><span class="pre">exported_model.xml</span></code> for weights and <code class="docutils literal notranslate"><span class="pre">exported_model.bin</span></code> for architecture.</p>
+<p>2. That’s how we can export the trained model <code class="docutils literal notranslate"><span class="pre">{work_dir}/{timestamp}/checkpoints/epoch_*.ckpt</span></code>
+from the previous section and save the exported model to the <code class="docutils literal notranslate"><span class="pre">{work_dir}/{timestamp}/</span></code> folder.</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-11" name="sd-tab-set-4" type="radio">
+</input><label class="sd-tab-label" for="sd-tab-item-11">
+CLI (with work_dir)</label><div class="sd-tab-content docutils">
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="o">(</span>otx<span class="o">)</span><span class="w"> </span>...$<span class="w"> </span>otx<span class="w"> </span><span class="nb">export</span><span class="w"> </span>--work_dir<span class="w"> </span>otx-workspace
 ...
-
-2023-02-02 03:23:03,057 | INFO : run task done.
-2023-02-02 03:23:03,064 | INFO : Exporting completed
+Elapsed<span class="w"> </span>time:<span class="w"> </span><span class="m">0</span>:00:02.446673
 </pre></div>
 </div>
-<p>3. You can check the accuracy of the IR model and the consistency between the exported model and the PyTorch model,
-using <code class="docutils literal notranslate"><span class="pre">otx</span> <span class="pre">eval</span></code> and passing the IR model path to the <code class="docutils literal notranslate"><span class="pre">--load-weights</span></code> parameter.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(otx) ...$ otx eval --test-data-roots splitted_dataset/val \
-                    --load-weights openvino_model/openvino.xml \
-                    --output openvino_model
-
+</div>
+<input id="sd-tab-item-12" name="sd-tab-set-4" type="radio">
+</input><label class="sd-tab-label" for="sd-tab-item-12">
+CLI (with config)</label><div class="sd-tab-content docutils">
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="o">(</span>otx<span class="o">)</span><span class="w"> </span>...$<span class="w"> </span>otx<span class="w"> </span><span class="nb">export</span><span class="w"> </span>...<span class="w"> </span>--checkpoint<span class="w"> </span>otx-workspace/20240312_051135/checkpoints/epoch_014.ckpt
 ...
-
-Performance(score: 0.9659400544959128, dashboard: (3 metric groups))
+Elapsed<span class="w"> </span>time:<span class="w"> </span><span class="m">0</span>:00:02.446673
 </pre></div>
+</div>
+</div>
+<input id="sd-tab-item-13" name="sd-tab-set-4" type="radio">
+</input><label class="sd-tab-label" for="sd-tab-item-13">
+API</label><div class="sd-tab-content docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">engine</span><span class="o">.</span><span class="n">export</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>3. We can check the accuracy of the IR model and the consistency between the exported model and the PyTorch model,
+using <code class="docutils literal notranslate"><span class="pre">otx</span> <span class="pre">test</span></code> and passing the IR model path to the <code class="docutils literal notranslate"><span class="pre">--checkpoint</span></code> parameter.</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-14" name="sd-tab-set-5" type="radio">
+</input><label class="sd-tab-label" for="sd-tab-item-14">
+CLI (with work_dir)</label><div class="sd-tab-content docutils">
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="o">(</span>otx<span class="o">)</span><span class="w"> </span>...$<span class="w"> </span>otx<span class="w"> </span><span class="nb">test</span><span class="w"> </span>--work_dir<span class="w"> </span>otx-workspace<span class="w"> </span><span class="se">\</span>
+<span class="w">                    </span>--checkpoint<span class="w"> </span>otx-workspace/20240312_052847/exported_model.xml<span class="w"> </span><span class="se">\</span>
+<span class="w">                    </span>--engine.device<span class="w"> </span>cpu
+...
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃<span class="w">        </span>Test<span class="w"> </span>metric<span class="w">        </span>┃<span class="w">       </span>DataLoader<span class="w"> </span><span class="m">0</span><span class="w">        </span>┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│<span class="w">       </span>test/accuracy<span class="w">       </span>│<span class="w">    </span><span class="m">0</span>.9931880235671997<span class="w">     </span>│
+│<span class="w">      </span>test/data_time<span class="w">       </span>│<span class="w">   </span><span class="m">0</span>.018398193642497063<span class="w">    </span>│
+│<span class="w">      </span>test/iter_time<span class="w">       </span>│<span class="w">    </span><span class="m">0</span>.2764030694961548<span class="w">     </span>│
+└───────────────────────────┴───────────────────────────┘
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-15" name="sd-tab-set-5" type="radio">
+</input><label class="sd-tab-label" for="sd-tab-item-15">
+CLI (with config)</label><div class="sd-tab-content docutils">
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="o">(</span>otx<span class="o">)</span><span class="w"> </span>...$<span class="w"> </span>otx<span class="w"> </span><span class="nb">test</span><span class="w"> </span>--config<span class="w"> </span>src/otx/recipe/classification/multi_class_cls/otx_mobilenet_v3_large.yaml<span class="w"> </span><span class="se">\</span>
+<span class="w">                    </span>--data_root<span class="w"> </span>data/flower_photos<span class="w"> </span><span class="se">\</span>
+<span class="w">                    </span>--checkpoint<span class="w"> </span>otx-workspace/20240312_052847/exported_model.xml<span class="w"> </span><span class="se">\</span>
+<span class="w">                    </span>--engine.device<span class="w"> </span>cpu
+...
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃<span class="w">        </span>Test<span class="w"> </span>metric<span class="w">        </span>┃<span class="w">       </span>DataLoader<span class="w"> </span><span class="m">0</span><span class="w">        </span>┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│<span class="w">       </span>test/accuracy<span class="w">       </span>│<span class="w">    </span><span class="m">0</span>.9931880235671997<span class="w">     </span>│
+│<span class="w">      </span>test/data_time<span class="w">       </span>│<span class="w">   </span><span class="m">0</span>.018398193642497063<span class="w">    </span>│
+│<span class="w">      </span>test/iter_time<span class="w">       </span>│<span class="w">    </span><span class="m">0</span>.2764030694961548<span class="w">     </span>│
+└───────────────────────────┴───────────────────────────┘
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-16" name="sd-tab-set-5" type="radio">
+</input><label class="sd-tab-label" for="sd-tab-item-16">
+API</label><div class="sd-tab-content docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">exported_model</span> <span class="o">=</span> <span class="n">engine</span><span class="o">.</span><span class="n">export</span><span class="p">()</span>
+<span class="n">engine</span><span class="o">.</span><span class="n">test</span><span class="p">(</span><span class="n">checkpoint</span><span class="o">=</span><span class="n">exported_model</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>4. <code class="docutils literal notranslate"><span class="pre">Optional</span></code> Additionally, we can tune confidence threshold via the command line.
+Learn more about template-specific parameters using <code class="docutils literal notranslate"><span class="pre">otx</span> <span class="pre">export</span> <span class="pre">--help</span></code>.</p>
+<p>For example, If you want to get the ONNX model format you can run it like below.</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-17" name="sd-tab-set-6" type="radio">
+</input><label class="sd-tab-label" for="sd-tab-item-17">
+CLI</label><div class="sd-tab-content docutils">
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="o">(</span>otx<span class="o">)</span><span class="w"> </span>...$<span class="w"> </span>otx<span class="w"> </span><span class="nb">export</span><span class="w"> </span>...<span class="w"> </span>--checkpoint<span class="w"> </span>otx-workspace/20240312_051135/checkpoints/epoch_014.ckpt<span class="w"> </span>--export_format<span class="w"> </span>ONNX
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-18" name="sd-tab-set-6" type="radio">
+</input><label class="sd-tab-label" for="sd-tab-item-18">
+API</label><div class="sd-tab-content docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">engine</span><span class="o">.</span><span class="n">export</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">export_format</span><span class="o">=</span><span class="s2">&quot;ONNX&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>If you also want to export <code class="docutils literal notranslate"><span class="pre">saliency_map</span></code>, a feature related to explain, and <code class="docutils literal notranslate"><span class="pre">feature_vector</span></code> information for XAI, you can do the following.</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-19" name="sd-tab-set-7" type="radio">
+</input><label class="sd-tab-label" for="sd-tab-item-19">
+CLI</label><div class="sd-tab-content docutils">
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="o">(</span>otx<span class="o">)</span><span class="w"> </span>...$<span class="w"> </span>otx<span class="w"> </span><span class="nb">export</span><span class="w"> </span>...<span class="w"> </span>--checkpoint<span class="w"> </span>otx-workspace/20240312_051135/checkpoints/epoch_014.ckpt<span class="w"> </span>--explain<span class="w"> </span>True
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-20" name="sd-tab-set-7" type="radio">
+</input><label class="sd-tab-label" for="sd-tab-item-20">
+API</label><div class="sd-tab-content docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">engine</span><span class="o">.</span><span class="n">export</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">explain</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
 </div>
 </section>
 <section id="optimization">
-<h2>Optimization<a class="headerlink" href="#optimization" title="Permalink to this heading">#</a></h2>
-<p>1. You can further optimize the model with <code class="docutils literal notranslate"><span class="pre">otx</span> <span class="pre">optimize</span></code>.
-It uses NNCF or POT depending on the model format.</p>
-<p>Please, refer to <a class="reference internal" href="../../../explanation/additional_features/models_optimization.html"><span class="doc">optimization explanation</span></a> section for more details on model optimization.</p>
-<p>2. Command example for optimizing
-a PyTorch model (<cite>.pth</cite>) with OpenVINO™ NNCF.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(otx) ...$ otx optimize --load-weights models/weights.pth --output nncf_model
+<h2>Optimization<a class="headerlink" href="#optimization" title="Link to this heading">#</a></h2>
+<p>1. We can further optimize the model with <code class="docutils literal notranslate"><span class="pre">otx</span> <span class="pre">optimize</span></code>.
+It uses PTQ depending on the model and transforms it to <code class="docutils literal notranslate"><span class="pre">INT8</span></code> format.</p>
+<p><code class="docutils literal notranslate"><span class="pre">PTQ</span></code> optimization is used for models exported in the OpenVINO™ IR format. It decreases the floating-point precision to integer precision of the exported model by performing the post-training optimization.</p>
+<p>To learn more about optimization, refer to <a class="reference external" href="https://github.com/openvinotoolkit/nncf">NNCF repository</a>.</p>
+<p>2.  Command example for optimizing OpenVINO™ model (.xml)
+with OpenVINO™ PTQ.</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-21" name="sd-tab-set-8" type="radio">
+</input><label class="sd-tab-label" for="sd-tab-item-21">
+CLI</label><div class="sd-tab-content docutils">
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="o">(</span>otx<span class="o">)</span><span class="w"> </span>...$<span class="w"> </span>otx<span class="w"> </span>optimize<span class="w">  </span>--work_dir<span class="w"> </span>otx-workspace<span class="w"> </span><span class="se">\</span>
+<span class="w">                         </span>--checkpoint<span class="w"> </span>otx-workspace/20240312_052847/exported_model.xml
 
 ...
-
-INFO:nncf:Loaded 983/983 parameters
-2023-02-04 00:06:11,725 | INFO : run task done.
-2023-02-04 00:06:16,924 | INFO : called evaluate()
-2023-02-04 00:06:16,935 | INFO : Accuracy after evaluation: 0.9591280653950953
-2023-02-04 00:06:16,936 | INFO : Evaluation completed
-Performance(score: 0.9591280653950953, dashboard: (3 metric groups))
+Statistics<span class="w"> </span>collection<span class="w"> </span>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━<span class="w"> </span><span class="m">100</span>%<span class="w"> </span><span class="m">30</span>/30<span class="w"> </span>•<span class="w"> </span><span class="m">0</span>:00:14<span class="w"> </span>•<span class="w"> </span><span class="m">0</span>:00:00
+Applying<span class="w"> </span>Fast<span class="w"> </span>Bias<span class="w"> </span>correction<span class="w"> </span>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━<span class="w"> </span><span class="m">100</span>%<span class="w"> </span><span class="m">58</span>/58<span class="w"> </span>•<span class="w"> </span><span class="m">0</span>:00:02<span class="w"> </span>•<span class="w"> </span><span class="m">0</span>:00:00
+Elapsed<span class="w"> </span>time:<span class="w"> </span><span class="m">0</span>:00:08.958733
 </pre></div>
 </div>
-<p>The optimization time relies on the hardware characteristics, for example on 1 NVIDIA GeForce RTX 3090 and Intel(R) Core(TM) i9-10980XE it took about 10 minutes.</p>
-<p>3.  Command example for optimizing
-OpenVINO™ model (.xml) with OpenVINO™ POT.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(otx) ...$ otx optimize --load-weights openvino_model/openvino.xml \
-                        --output pot_model
+</div>
+<input id="sd-tab-item-22" name="sd-tab-set-8" type="radio">
+</input><label class="sd-tab-label" for="sd-tab-item-22">
+API</label><div class="sd-tab-content docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ckpt_path</span> <span class="o">=</span> <span class="s2">&quot;otx-workspace/20240312_052847/exported_model.xml&quot;</span>
+<span class="n">engine</span><span class="o">.</span><span class="n">optimize</span><span class="p">(</span><span class="n">checkpoint</span><span class="o">=</span><span class="n">ckpt_path</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The optimization time highly relies on the hardware characteristics, for example on 1 NVIDIA GeForce RTX 3090 it took about 10 minutes.
+Please note, that PTQ will take some time without logging to optimize the model.</p>
+<p>3. Finally, we can also evaluate the optimized model by passing
+it to the <code class="docutils literal notranslate"><span class="pre">otx</span> <span class="pre">test</span></code> function.</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-23" name="sd-tab-set-9" type="radio">
+</input><label class="sd-tab-label" for="sd-tab-item-23">
+CLI</label><div class="sd-tab-content docutils">
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="o">(</span>otx<span class="o">)</span><span class="w"> </span>...$<span class="w"> </span>otx<span class="w"> </span><span class="nb">test</span><span class="w"> </span>--work_dir<span class="w"> </span>otx-workspace<span class="w"> </span><span class="se">\</span>
+<span class="w">                    </span>--checkpoint<span class="w"> </span>otx-workspace/20240312_055042/optimized_model.xml<span class="w"> </span><span class="se">\</span>
+<span class="w">                    </span>--engine.device<span class="w"> </span>cpu
 
 ...
-
-Performance(score: 0.9577656675749319, dashboard: (3 metric groups))
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃<span class="w">        </span>Test<span class="w"> </span>metric<span class="w">        </span>┃<span class="w">       </span>DataLoader<span class="w"> </span><span class="m">0</span><span class="w">        </span>┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│<span class="w">       </span>test/accuracy<span class="w">       </span>│<span class="w">     </span><span class="m">0</span>.989645779132843<span class="w">     </span>│
+│<span class="w">      </span>test/data_time<span class="w">       </span>│<span class="w">    </span><span class="m">0</span>.00853706430643797<span class="w">    </span>│
+│<span class="w">      </span>test/iter_time<span class="w">       </span>│<span class="w">    </span><span class="m">0</span>.43554383516311646<span class="w">    </span>│
+└───────────────────────────┴───────────────────────────┘
+Elapsed<span class="w"> </span>time:<span class="w"> </span><span class="m">0</span>:00:16.260521
 </pre></div>
 </div>
-<p>Please note, that POT will take some time (generally less than NNCF optimization) without logging to optimize the model.</p>
-<p>4. Now you have fully trained, optimized and exported an
-efficient model representation ready-to-use classification model.</p>
-<p>The following tutorials provide further steps on how to <a class="reference internal" href="../deploy.html"><span class="doc">deploy</span></a> and use your model in the <a class="reference internal" href="../demo.html"><span class="doc">demonstration mode</span></a> and visualize results.
-The examples are provided with an object detection model, but it is easy to apply them for classification by substituting the object detection model with classification one.</p>
+</div>
+<input id="sd-tab-item-24" name="sd-tab-set-9" type="radio">
+</input><label class="sd-tab-label" for="sd-tab-item-24">
+API</label><div class="sd-tab-content docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ckpt_path</span> <span class="o">=</span> <span class="s2">&quot;otx-workspace/20240312_055042/optimized_model.xml&quot;</span>
+<span class="n">engine</span><span class="o">.</span><span class="n">test</span><span class="p">(</span><span class="n">checkpoint</span><span class="o">=</span><span class="n">ckpt_path</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now we have fully trained, optimized and exported an efficient model representation ready-to-use multi-class classification model.</p>
 </section>
 </section>
 
@@ -714,8 +932,8 @@ The examples are provided with an object detection model, but it is easy to appl
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#validation">
-   Validation
+  <a class="reference internal nav-link" href="#evaluation">
+   Evaluation
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
@@ -778,7 +996,7 @@ The examples are provided with an object detection model, but it is easy to appl
     
 <p class="copyright">
 
-    &copy; Copyright 2023, OpenVINO™ Training Extensions Contributors.<br>
+    &copy; Copyright 2024, OpenVINO™ Training Extensions Contributors.<br>
 
 </p>
 
@@ -797,7 +1015,7 @@ The examples are provided with an object detection model, but it is easy to appl
   <div class="footer-item">
     
 <p class="sphinx-version">
-Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.3.0.<br>
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.2.6.<br>
 </p>
 
   </div>
